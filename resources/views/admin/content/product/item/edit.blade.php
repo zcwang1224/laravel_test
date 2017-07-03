@@ -1,7 +1,7 @@
 {{-- 自動引入layouts.administration.blade.php 當為外層樣板 --}}
 @extends('layouts.admin')
 
-{{-- --------------- 最上方top123qwe -------------- --}}
+{{-- --------------- 最上方top -------------- --}}
 @section('top')
     @parent
     <!-- CSS -->
