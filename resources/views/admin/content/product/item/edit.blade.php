@@ -323,7 +323,7 @@
                       <br />
                       {{-- 規格設定 --}}
                       <div id="stand_container">
-                        <div class="control-group stand_item_container">
+                        <div class="control-group stand_item_container" data-stand_number="1">
                           <!-- <label class="control-label col-md-3 col-sm-3 col-xs-12">Input Tags</label> -->
                           <div class="col-md-3 col-sm-4 col-xs-4">
                             <input type="text" name="stand_name[]" class="form-control" placeholder="{{ trans('default.default_please_input',['type' => trans('product.productItem_item_stand_name')]) }}">
@@ -338,7 +338,7 @@
                             </button> 
                           </div>                           
                         </div> 
-                        <div class="control-group stand_item_container" >
+                        <div class="control-group stand_item_container" data-stand_number="2">
                           <!-- <label class="control-label col-md-3 col-sm-3 col-xs-12">Input Tags</label> -->
                           <div class="col-md-3 col-sm-6 col-xs-6">
                             <input type="text" name="stand_name[]" class="form-control" placeholder="{{ trans('default.default_please_input',['type' => trans('product.productItem_item_stand_name')]) }}">
@@ -441,7 +441,7 @@
                         {{-- 表格內容 --}}
                         <tbody id="image_item_container"> 
                         @foreach($productItem->productItemImages as $key => $value)   
-                          <tr class="even pointer" data-item_id="{{ $value->product_item_id }}">
+                          <tr class="even pointer" data-item_id="{{ $value->product_item_id }}" data-image_number="{{ $key }}">
                             <td class="a-center ">
                               <input type="checkbox" class="flat" name="image_table" data-checkbox_name="image_table" >
                             </td>
@@ -549,7 +549,7 @@
         </div> 
     <!-- Jquery Template - stand template -->
     <script type="text/html" id="stand_template">
-      <div class="control-group stand_item_container">
+      <div class="control-group stand_item_container" data-template-bind='[{"attribute": "data-stand_number", "value": "stand_number"}]'>
         <!-- <label class="control-label col-md-3 col-sm-3 col-xs-12">Input Tags</label> -->
         <div class="col-md-3 col-sm-6 col-xs-6">
           <input type="text" name="stand_name[]" class="form-control" data-id="stand_name_input" placeholder="{{ trans('default.default_please_input',['type' => trans('product.productItem_item_stand_name')]) }}">
@@ -567,7 +567,7 @@
     </script>           
     <!-- Jquery Template - image item -->
     <script type="text/html" id="image_template">
-        <tr class="even pointer">
+        <tr class="even pointer" data-template-bind='[{"attribute": "data-image_number", "value": "image_number"}]'>
           <td class="a-center ">
             <input type="checkbox" class="flat" name="image_table" data-checkbox_name="image_table">
           </td>
@@ -631,12 +631,13 @@
 
         /* --------- Jquery template - create new stand item -----------*/ 
         $('#create_stand_template_btn').on('click', function(){
-            var count_items         = $('#stand_container > div').length+1;
-            var stand_id            = 'stand_'+count_items;
-            var stand_name_input_id = 'stand_name_input_'+count_items;
+            var last_stand_number   = $('#stand_container > div:last').data('stand_number')+1;
+            var stand_id            = 'stand_'+last_stand_number;
+            var stand_name_input_id = 'stand_name_input_'+last_stand_number;
             var options             = {
                                         'stand_id'         : stand_id,
                                         'stand_name_input' : stand_name_input_id,
+                                        'stand_number'     : last_stand_number
                                       };
             $('#stand_container').loadTemplate("#stand_template",options,{append:true});                              
             $("#"+stand_id).tagsInput({
@@ -651,15 +652,16 @@
         });       
         /* --------- Jquery template - create new image item -----------*/ 
         $('#create_image_template_btn').on('click', function(){
-            var count_items = $('#image_item_container > tr').length+1;
-            var options     = {
-                                'thumbnail' :'thumbnail_'+count_items,
-                                'holder'    :'image_holder_'+count_items,
-                                'lfm'       :'image_tr_'+count_items
-                              };
+            var last_image_number = $('#image_item_container > tr:last').data('image_number')+1;
+            var options           = {
+                                      'thumbnail'    :'thumbnail_'+last_image_number,
+                                      'holder'       :'image_holder_'+last_image_number,
+                                      'lfm'          :'image_tr_'+last_image_number,
+                                      'image_number' : last_image_number,
+                                    };
             $('#image_item_container').loadTemplate("#image_template",options,{append:true});
             initialChecked(); 
-            $('#image_tr_'+count_items).filemanager('image');
+            $('#image_tr_'+last_image_number).filemanager('image');
         });
 
         /* -------- Jquery template - related item ----------*/  
