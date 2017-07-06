@@ -326,7 +326,7 @@
                         <div class="control-group stand_item_container" data-stand_number="1">
                           <!-- <label class="control-label col-md-3 col-sm-3 col-xs-12">Input Tags</label> -->
                           <div class="col-md-3 col-sm-4 col-xs-4">
-                            <input type="text" name="stand_name[]" class="form-control" placeholder="{{ trans('default.default_please_input',['type' => trans('product.productItem_item_stand_name')]) }}">
+                            <input type="text" name="stand_name[]" class="form-control" value="顏色" placeholder="{{ trans('default.default_please_input',['type' => trans('product.productItem_item_stand_name')]) }}" id="stand_name_input_1">
                           </div>
                           <div class="col-md-8  col-sm-4 col-xs-4">
                             <input id="stand_1" name="stand[]" type="text" class="tags form-control" />
@@ -341,7 +341,7 @@
                         <div class="control-group stand_item_container" data-stand_number="2">
                           <!-- <label class="control-label col-md-3 col-sm-3 col-xs-12">Input Tags</label> -->
                           <div class="col-md-3 col-sm-6 col-xs-6">
-                            <input type="text" name="stand_name[]" class="form-control" placeholder="{{ trans('default.default_please_input',['type' => trans('product.productItem_item_stand_name')]) }}">
+                            <input type="text" name="stand_name[]" value="尺寸" class="form-control" placeholder="{{ trans('default.default_please_input',['type' => trans('product.productItem_item_stand_name')]) }}" id="stand_name_input_2">
                           </div>                          
                           <div class="col-md-8 col-sm-6 col-xs-12">
                             <input id="stand_2" name="stand[]" type="text" class="tags form-control" />
@@ -360,12 +360,11 @@
     <thead>
       <tr class="headings">
         <th><input type="checkbox" id="check-all" class="flat" data-checkbox_name="product_stand_table"></th>
-        <div id="product_stand_item_head_container">
-        <!-- <th class="column-title">{{ trans('product.productItem_item_stand_name')}} </th> -->
-        </div>
-        <th class="column-title">{{ trans('product.productItemIndex_item_title')}} </th>
+        <th class="column-title" id="stand_name_head_1"></th>
+        <th class="column-title" id="stand_name_head_2"></th>
+        <th class="column-title" id="stand_heading_table_before_stand">{{ trans('product.productItemIndex_item_title')}} </th>
         <th class="column-title last">{{ trans('product.productItemIndex_item_category')}} </th>
-        <th class="bulk-actions" colspan="3">
+        <th class="bulk-actions" colspan="10">
           <a class="antoo" style="color:#fff; font-weight:500;">
           {{ trans('default.default_checked') }}  ( <span class="action-cnt"> </span> ) <i class="fa fa-chevron-down"></i></a>
         </th>
@@ -546,7 +545,7 @@
             </form> 
 
           </div>
-        </div> 
+        </div>              
     <!-- Jquery Template - stand template -->
     <script type="text/html" id="stand_template">
       <div class="control-group stand_item_container" data-template-bind='[{"attribute": "data-stand_number", "value": "stand_number"}]'>
@@ -606,103 +605,112 @@
 
 
         /* --------- initialize tagsInput plugin -----------*/ 
-        var init_stand_length = $('#stand_container > div').length;
-        for(var i = 1 ; i <= init_stand_length ;i++)
-        {
-            var stand_id    = 'stand_'+i;
-            $("#"+stand_id).tagsInput({
-                                      width       : "auto",
-                                      defaultText : "{{ trans('product.productItem_item_stand_create') }}",
-                                      height      : '100px',
-                                      width       : '600px',
-                                      removeText  : "{{ trans('product.productItem_item_stand_remove') }}",                                    
-                                  });
-        }
-        bind_remove_stand();
+          var init_stand_length = $('#stand_container > div').length;
+          for(var i = 1 ; i <= init_stand_length ;i++)
+          {
+            bind_stand_tagInput(i);
+            bing_change_stand_name(i);
+          }
+
+          bind_remove_stand();
         /* --------- initialize filemanager plugin -----------*/ 
-        var init_items_length = $('#image_item_container > tr').length;
-        for(var i = 0 ; i < init_items_length ;i++)
-        {
-          $('#image_tr_'+i).filemanager('image');
-        }
-        saveRelatedItems(); // related_item 存到 #related_item_container 內
-        $('#image').filemanager('image');
+          var init_items_length = $('#image_item_container > tr').length;
+          for(var i = 0 ; i < init_items_length ;i++)
+          {
+            $('#image_tr_'+i).filemanager('image');
+          }
+          saveRelatedItems(); // related_item 存到 #related_item_container 內
+          $('#image').filemanager('image');
        
 
         /* --------- Jquery template - create new stand item -----------*/ 
-        $('#create_stand_template_btn').on('click', function(){
-            var last_stand_number   = $('#stand_container > div:last').data('stand_number')+1;
-            var stand_id            = 'stand_'+last_stand_number;
-            var stand_name_input_id = 'stand_name_input_'+last_stand_number;
-            var options             = {
-                                        'stand_id'         : stand_id,
-                                        'stand_name_input' : stand_name_input_id,
-                                        'stand_number'     : last_stand_number
-                                      };
-            $('#stand_container').loadTemplate("#stand_template",options,{append:true});                              
-            $("#"+stand_id).tagsInput({
-                                      width       : "auto",
-                                      defaultText : "{{ trans('product.productItem_item_stand_create') }}",
-                                      height      : '100px',
-                                      width       : '600px',   
-                                      removeText  : "{{ trans('product.productItem_item_stand_remove') }}",                                    
-                                  });
-            bing_change_stand_name(stand_name_input_id);
-            bind_remove_stand();
-        });       
+          $('#create_stand_template_btn').on('click', function(){
+
+              var last_stand_number          = 1;
+              if($('#stand_container > div:last').data('stand_number'))
+              {
+                last_stand_number          = $('#stand_container > div:last').data('stand_number')+1;
+              }
+              var stand_id                   = 'stand_'+last_stand_number;
+              var stand_name_input_id        = 'stand_name_input_'+last_stand_number;
+              var stand_name_head_id         = 'stand_name_head_'+last_stand_number;
+              var stand_name_heading_element = '<th class="column-title" id="'+stand_name_head_id+'"></th>';
+              var stand_item_table_element   = '<th class="column-title" data-content="stand_item_name"></th>';
+              var options                    = {
+                                                 'stand_id'         : stand_id,
+                                                 'stand_name_input' : stand_name_input_id,
+                                                 'stand_number'     : last_stand_number
+                                               };
+
+              $('#stand_container').loadTemplate("#stand_template",options,{append:true});                              
+              bind_stand_tagInput(last_stand_number);
+              
+              $('#stand_heading_table_before_stand').before(stand_name_heading_element);
+              $('#stand_item_table_before_stand').before(stand_name_heading_element);
+              
+              bing_change_stand_name(last_stand_number);
+              bind_remove_stand();
+              refresh_stand_table();
+          });       
         /* --------- Jquery template - create new image item -----------*/ 
-        $('#create_image_template_btn').on('click', function(){
-            var last_image_number = $('#image_item_container > tr:last').data('image_number')+1;
-            var options           = {
-                                      'thumbnail'    :'thumbnail_'+last_image_number,
-                                      'holder'       :'image_holder_'+last_image_number,
-                                      'lfm'          :'image_tr_'+last_image_number,
-                                      'image_number' : last_image_number,
-                                    };
-            $('#image_item_container').loadTemplate("#image_template",options,{append:true});
-            initialChecked(); 
-            $('#image_tr_'+last_image_number).filemanager('image');
-        });
+          $('#create_image_template_btn').on('click', function(){
+              var last_image_number          = 1;
+              if($('#image_item_container > tr:last').data('image_number'))
+              {
+                last_image_number = $('#image_item_container > tr:last').data('image_number')+1;
+              }
+
+              var options           = {
+                                        'thumbnail'    :'thumbnail_'+last_image_number,
+                                        'holder'       :'image_holder_'+last_image_number,
+                                        'lfm'          :'image_tr_'+last_image_number,
+                                        'image_number' : last_image_number,
+                                      };
+              $('#image_item_container').loadTemplate("#image_template",options,{append:true});
+              initialIChecked(); 
+              $('#image_tr_'+last_image_number).filemanager('image');
+
+          });
 
         /* -------- Jquery template - related item ----------*/  
-        $('#color_relative_item').on('click', function(){
-            
-            var url = "{{ route('admin_product_item_popup')}}?ids="+fetchRelatedItems()+"&current_id={{ $productItem->product_item_id }}";
-            $.colorbox({
-                          iframe:true, 
-                          fixed:true, 
-                          width:"80%", 
-                          height:"80%",
-                          href:url,
-                          onClosed:function()
-                          {
-                              var item_ids = $("#popup_container").val();
-                              $("#popup_container").val('');
-                              $("#relative_item_container").loadTemplate("#related_template",JSON.parse(item_ids),{append:true});
-                              initialChecked(); 
-                              saveRelatedItems();                                                              
-                          }
-                        });
-        }); 
+          $('#color_relative_item').on('click', function(){
+              
+              var url = "{{ route('admin_product_item_popup')}}?ids="+fetchRelatedItems()+"&current_id={{ $productItem->product_item_id }}";
+              $.colorbox({
+                            iframe:true, 
+                            fixed:true, 
+                            width:"80%", 
+                            height:"80%",
+                            href:url,
+                            onClosed:function()
+                            {
+                                var item_ids = $("#popup_container").val();
+                                $("#popup_container").val('');
+                                $("#relative_item_container").loadTemplate("#related_template",JSON.parse(item_ids),{append:true});
+                                initialIChecked(); 
+                                saveRelatedItems();                                                              
+                            }
+                          });
+          }); 
 
         /* -------- 刪除圖片 ----------*/
-        $('#delete_image_btn').on('click', function(){
-            $('#image_item_container .icheckbox_flat-green').each(function(i,v){
-                if($(this).hasClass('checked')){
-                  $(this).closest('tr').remove();
-                }
-            });  
-            $('#check-all').trigger('ifUnchecked');
-        });
+          $('#delete_image_btn').on('click', function(){
+              $('#image_item_container .icheckbox_flat-green').each(function(i,v){
+                  if($(this).hasClass('checked')){
+                    $(this).closest('tr').remove();
+                  }
+              });  
+              $('#check-all').trigger('ifUnchecked');
+          });
         /* -------- 刪除相關產品 ----------*/
-        $('#delete_related_item_btn').on('click',function(){
-            $('#relative_item_container .icheckbox_flat-green').each(function(i,v){
-                if($(this).hasClass('checked')){
-                  $(this).closest('tr').remove();
-                }
-            });
-            saveRelatedItems();
-        });
+          $('#delete_related_item_btn').on('click',function(){
+              $('#relative_item_container .icheckbox_flat-green').each(function(i,v){
+                  if($(this).hasClass('checked')){
+                    $(this).closest('tr').remove();
+                  }
+              });
+              saveRelatedItems();
+          });
 
 
           /* -------- SweetAlert 2 - Submit Confirm ----------*/
@@ -749,22 +757,97 @@
               });
 
       });
-      
+      /* -------- bind - tagInput - stand item ----------*/
+      function bind_stand_tagInput(id)
+      {
+        $("#stand_"+id).tagsInput({
+                                  width       : "auto",
+                                  defaultText : "{{ trans('product.productItem_item_stand_create') }}",
+                                  height      : '100px',
+                                  width       : '600px',
+                                  removeText  : "{{ trans('product.productItem_item_stand_remove') }}",  
+                                  onAddTag    : function(){
+                                                            refresh_stand_table();
+                                                              // console.log(table_data);
+                                                          },
+                                  onRemoveTag : function(){
+                                                              $('#stand_'+id+'_tagsinput > .tag').each(function(i,v){
+                                                                  console.log($(this).find('span').text());
+                                                              });
+                                                          },
+
+                              });                              
+      }  
+      /* -------- 更新規格資料表資料欄位 ----------*/
+      function refresh_stand_table()
+      {
+        var table_data = generate_stand_item_table_data();
+        var total_stand_name = $('#stand_container > div').length;
+        var html = generate_stand_item_table_template(table_data,total_stand_name);
+        $('#product_stand_item_container').children().remove();
+        $('#product_stand_item_container').append(html);
+        initialIChecked();         
+      }
+      /* -------- 產出規格template html ----------*/
+      function generate_stand_item_table_template(/* Array */ array, total_stand_name){
+        var html = "";
+        array.forEach(function(v, i){
+          html += '<tr class="even pointer">';
+          html += '<td class="a-center ">';
+          html += '<input type="checkbox" class="flat" name="stand_item_table" data-checkbox_name="stand_item_table" >';
+          html += '</td>';     
+          for(var i =0 ;i < total_stand_name; i++)
+          {
+            if(!v[i])
+            {
+              html += '<td></td>';
+            }
+            else
+            {
+              html += '<td>'+v[i]+'</td>';
+            }
+          }
+          html += '<td>價格</td>';
+          html += '<td>庫存</td>';
+          html += '</tr>';
+        });
+        return html;
+
+      }      
+      /* -------- 產出規格表中的資料 ----------*/
+      function generate_stand_item_table_data(){
+        var stand_item_container = [];
+        $('.stand_item_container').each(function(i,v){
+          var stand_item_arr = [];
+          $(this).find('.tagsinput > .tag').each(function(i,v){
+              stand_item_arr[i] = $(this).find('span').text();
+          });
+          stand_item_container[i] = stand_item_arr;
+        });
+        return arrayCombination(stand_item_container);
+      }
+
       /* -------- bind - 刪除規格 ----------*/
       function bind_remove_stand()
       {
         $('.stand_remove_btn').unbind();
         $('.stand_remove_btn').on('click', function(){
+            var stand_number = $(this).closest('.stand_item_container').data('stand_number');
             $(this).closest('.stand_item_container').remove();
+            $('#stand_name_head_'+stand_number).remove();
+            refresh_stand_table();
         });        
+        
+
       }
       /* -------- bind - 改變規格名稱 ----------*/
-      function bing_change_stand_name(stand_name_input_id)
+      function bing_change_stand_name(id)
       {
-        $('#'+stand_name_input_id).unbind();
-        $('#'+stand_name_input_id).on('change', function(){
-            alert("123");
-        });           
+        $('#stand_name_input_'+id).unbind();
+        $('#stand_name_input_'+id).on('change', function(){
+            $('#stand_name_head_'+id).text($(this).val());
+        });   
+        $('#stand_name_input_'+id).trigger('change');     
       }      
       
       /* ---------------------------------------------------
@@ -802,7 +885,7 @@
        * @param  
        * @return 
        * ---------------------------------------------------*/        
-        function initialChecked()
+        function initialIChecked()
         {
             $('input.flat').iCheck({
                 checkboxClass: 'icheckbox_flat-green',
@@ -845,6 +928,80 @@
             });
 
             // init_DataTables();
-        }      
+        }   
+
+
+  function arrayCombination(/* array */ array){
+    // var array = [['a','b','c'],['d','e','o'],['f','g','h'],['x','y','z']];
+    // console.log(array);
+
+      
+      var stand_total = 1;    //  組合出來的規格總數
+      var stand_each_total = [];  //  存放每個規格名稱的規格數目
+      //計算組合出來的規格總數
+      array.forEach(function(v,i){
+        if(v.length > 0)
+        {
+          stand_total = stand_total * v.length;
+        }
+        stand_each_total[i] = v.length;
+      });
+      // console.log(stand_total);
+      // console.log(stand_each_total);
+      var stand_arr = [];stand_arr.length = stand_total;  // 存放所有的組合
+      for(i = 0 ; i < stand_total ;i++)
+      {
+        stand_arr[i] = [];
+      }
+      array.forEach(function(v,i){
+        // console.log(stand_each_total[i]);
+        var each_insert_total = returnEachInsertTotal(stand_each_total,i);  //  每次插入的數目
+        var insert_period     = (v.length-1)*each_insert_total;       //  每隔幾次要再插入
+        var total_insert_time = returnTotalInsertTime(stand_each_total,i);  //  總共進行幾次each_insert_total     
+      v.forEach(function(v_1,i_1){
+        var start_position = i_1*each_insert_total;
+        // console.log(start_position);
+        for(var times = 0 ; times < total_insert_time ;times++)
+        {
+          // console.log(times*each_insert_total+start_position);
+          var now_position = times*each_insert_total*(v.length)+start_position;
+          // console.log(now_position);
+  // console.log(now_position++);
+          // console.log(now_position);
+          for(var remain_insert = each_insert_total ; remain_insert > 0 ;remain_insert--)
+          {
+            // console.log(now_position);
+            stand_arr[now_position++].push(v_1);
+            // now_position++;
+          }
+        }
+      });
+      });   
+      return stand_arr;   
+  }
+
+    function returnEachInsertTotal(/* Array */stand_each_total,index)
+    {
+      var inser_total = 1;
+      stand_each_total.forEach(function(v,i){
+        if(i > index)
+        {
+          inser_total = inser_total * v;
+        }
+      });
+      return inser_total?inser_total:1;
+    }
+    function returnTotalInsertTime(/* Array */stand_each_total,index)
+    {
+      var total_insert_time = 1;
+      stand_each_total.forEach(function(v,i){
+        if(i < index)
+        {
+          total_insert_time = total_insert_time * v;
+        }
+      });
+      return total_insert_time;
+    }  
+
     </script>        
 @stop
