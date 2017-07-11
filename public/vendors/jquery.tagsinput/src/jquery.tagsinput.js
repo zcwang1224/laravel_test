@@ -115,7 +115,6 @@
 					} else {
 						$('#'+id+'_tag').blur();
 					}
-
 					$.fn.tagsInput.updateTagsField(this,tagslist);
 
 					if (options.callback && tags_callbacks[id] && tags_callbacks[id]['onAddTag']) {
@@ -190,7 +189,7 @@
       autosize: true,
       comfortZone: 20,
       inputPadding: 6*2,
-      removeText:'Removing Tag'
+      removeText:'Removing Tag',
     },options);
 
     	var uniqueIdCounter = 0;

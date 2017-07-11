@@ -323,13 +323,14 @@
                       <br />
                       {{-- 規格設定 --}}
                       <div id="stand_container">
-                        <div class="control-group stand_item_container" data-stand_number="1">
+                      @foreach($productItem->stands as $stand_k => $stand_v)
+                        <div class="control-group stand_item_container" data-stand_number="{{ $stand_k }}">
                           <!-- <label class="control-label col-md-3 col-sm-3 col-xs-12">Input Tags</label> -->
                           <div class="col-md-3 col-sm-4 col-xs-4">
-                            <input type="text" name="stand_name[]" class="form-control" value="顏色" placeholder="{{ trans('default.default_please_input',['type' => trans('product.productItem_item_stand_name')]) }}" id="stand_name_input_1">
+                            <input type="text" name="stand_name[]" class="form-control" value="{{ $stand_v->stand_name }}" placeholder="{{ trans('default.default_please_input',['type' => trans('product.productItem_item_stand_name')]) }}" id="stand_name_input_{{$stand_k}}">
                           </div>
                           <div class="col-md-8  col-sm-4 col-xs-4">
-                            <input id="stand_1" name="stand[]" type="text" class="tags form-control" />
+                            <input id="stand_{{$stand_k}}" name="stand_{{$stand_k}}" type="text" class="tags form-control" value="{{$stand_v->stand_item}}" />
                             <div style="position: relative; float: left; width: 250px; margin: 10px;"></div>
                           </div>
                           <div class="col-md-1 col-sm-4 col-xs-4">
@@ -337,67 +338,41 @@
                               <span class="glyphicon glyphicon-remove-sign" aria-hidden="true"></span>
                             </button> 
                           </div>                           
-                        </div> 
-                        <div class="control-group stand_item_container" data-stand_number="2">
-                          <!-- <label class="control-label col-md-3 col-sm-3 col-xs-12">Input Tags</label> -->
-                          <div class="col-md-3 col-sm-6 col-xs-6">
-                            <input type="text" name="stand_name[]" value="尺寸" class="form-control" placeholder="{{ trans('default.default_please_input',['type' => trans('product.productItem_item_stand_name')]) }}" id="stand_name_input_2">
-                          </div>                          
-                          <div class="col-md-8 col-sm-6 col-xs-12">
-                            <input id="stand_2" name="stand[]" type="text" class="tags form-control" />
-                            <div style="position: relative; float: left; width: 25px; margin: 10px;"></div>
-                          </div>
-                          <div class="col-md-1 col-sm-6 col-xs-12">
-                            <button type="button" class="btn btn-default btn-danger stand_remove_btn" aria-label="Left Align">
-                              <span class="glyphicon glyphicon-remove-sign" aria-hidden="true"></span>
-                            </button> 
-                          </div>                          
-                        </div> 
+                        </div>
+                      @endforeach 
                       </div>   
-
-  <table class="table table-striped jambo_table bulk_action">
-    {{-- 表格標題 --}}
-    <thead>
-      <tr class="headings">
-        <th><input type="checkbox" id="check-all" class="flat" data-checkbox_name="product_stand_table"></th>
-        <th class="column-title" id="stand_name_head_1"></th>
-        <th class="column-title" id="stand_name_head_2"></th>
-        <th class="column-title" id="stand_heading_table_before_stand">{{ trans('product.productItemIndex_item_title')}} </th>
-        <th class="column-title last">{{ trans('product.productItemIndex_item_category')}} </th>
-        <th class="bulk-actions" colspan="10">
-          <a class="antoo" style="color:#fff; font-weight:500;">
-          {{ trans('default.default_checked') }}  ( <span class="action-cnt"> </span> ) <i class="fa fa-chevron-down"></i></a>
-        </th>
-      </tr>
-    </thead> 
-    {{-- 表格內容 --}}
-    <tbody id="product_stand_item_container"> 
-<!--     @foreach($productItem->productItemImages as $key => $value)   
-      <tr class="even pointer" data-item_id="{{ $value->product_item_id }}">
-        <td class="a-center ">
-          <input type="checkbox" class="flat" name="image_table" data-checkbox_name="image_table" >
-        </td>
-        <td><input type="text" name="multiple_image_comment[]" value="{{ $value->image_comment }}" class="form-control col-md-7 col-xs-12"></td>
-        <td>        
-          <div class="col-md-10 col-sm-6 col-xs-12">
-             <div class="input-group">
-               <input id="thumbnail_{{$key}}" class="form-control" data-checkbox_name="image_table" type="text" name="multiple_image[]" value="{{ $value->image_path }}" readonly>
-               <span class="input-group-btn">
-                 <a id="image_tr_{{$key}}" data-input="thumbnail_{{$key}}" data-preview="image_holder_{{$key}}" class="btn btn-primary">
-                   <i class="fa fa-picture-o"></i> {{ trans('default.default_choose') }}
-                 </a>
-               </span>             
-             </div>          
-          </div>
-        </td>   
-        <td><img id="image_holder_{{$key}}" style="max-height:100px;" width="50px" height="50px" src="{{ $value->image_path }}"></td>
-        </td>
-      </tr>
-    @endforeach   -->
-    </tbody>
-  </table> 
-
-
+                      <table class="table table-striped jambo_table bulk_action">
+                        {{-- 表格標題 --}}
+                        <thead>
+                          <tr class="headings">
+                            <th><input type="checkbox" id="check-all" class="flat" data-checkbox_name="product_stand_table"></th>
+                            @foreach($productItem->stands as $stand_k => $stand_v)
+                            <th class="column-title" id="stand_name_head_{{$stand_k}}"></th>
+                            @endforeach
+                            <th class="column-title" id="stand_heading_table_before_stand">{{ trans('product.productIten_item_stand_price')}} </th>
+                            <th class="column-title last">{{ trans('product.productIten_item_stand_inventory')}} </th>
+                            <th class="bulk-actions" colspan="10">
+                              <a class="antoo" style="color:#fff; font-weight:500;">
+                              {{ trans('default.default_checked') }}  ( <span class="action-cnt"> </span> ) <i class="fa fa-chevron-down"></i></a>
+                            </th>
+                          </tr>
+                        </thead> 
+                        {{-- 表格內容 --}}
+                        <tbody id="product_stand_item_container"> 
+                        @foreach($productItem->productStands as $productStands_key => $productStands_value)   
+                          <tr class="even pointer">
+                            <td class="a-center ">
+                              <input type="checkbox" class="flat" name="stand_item_table" data-checkbox_name="stand_item_table" >
+                            </td>
+                            @foreach($productStands_value->productStandItems as $productStandItems_key => $productStandItems_value)
+                              <td class="stand_item">{{ $productStandItems_value->stand_item }}<input type="hidden" name="product_stand_{{$loop->index}}[]" value="{{ $productStandItems_value->stand_item }}"></td>
+                            @endforeach
+                            <td><input class="form-control stand_price" type="text"  name="product_stand_price_{{$loop->index}}" value="{{ $productStands_value->price }}"></td>
+                            <td><input class="form-control stand_inventory"  name="product_stand_inventory_{{$loop->index}}" type="text" value="{{ $productStands_value->inventory }}"></td>
+                          </tr>
+                        @endforeach  
+                        </tbody>
+                      </table> 
                     </div>
                   </div>
                 </div>
@@ -554,7 +529,8 @@
           <input type="text" name="stand_name[]" class="form-control" data-id="stand_name_input" placeholder="{{ trans('default.default_please_input',['type' => trans('product.productItem_item_stand_name')]) }}">
         </div>        
         <div class="col-md-8 col-sm-6 col-xs-12">
-          <input data-id="stand_id" name="stand[]" type="text" class="tags form-control" />
+          <input data-id="stand_id" type="text" class="tags form-control" data-template-bind='[
+     {"attribute": "name", "value": "input_name"}]'/>
           <div style="position: relative; float: left; width: 250px; margin: 10px;"></div>
         </div>
         <div class="col-md-1 col-sm-6 col-xs-12">
@@ -606,7 +582,7 @@
 
         /* --------- initialize tagsInput plugin -----------*/ 
           var init_stand_length = $('#stand_container > div').length;
-          for(var i = 1 ; i <= init_stand_length ;i++)
+          for(var i = 0 ; i < init_stand_length ;i++)
           {
             bind_stand_tagInput(i);
             bing_change_stand_name(i);
@@ -626,8 +602,8 @@
         /* --------- Jquery template - create new stand item -----------*/ 
           $('#create_stand_template_btn').on('click', function(){
 
-              var last_stand_number          = 1;
-              if($('#stand_container > div:last').data('stand_number'))
+              var last_stand_number          = 0;
+              if($('#stand_container > div:last').data('stand_number') != undefined)
               {
                 last_stand_number          = $('#stand_container > div:last').data('stand_number')+1;
               }
@@ -636,21 +612,23 @@
               var stand_name_head_id         = 'stand_name_head_'+last_stand_number;
               var stand_name_heading_element = '<th class="column-title" id="'+stand_name_head_id+'"></th>';
               var stand_item_table_element   = '<th class="column-title" data-content="stand_item_name"></th>';
+              var input_name                 = 'stand_'+last_stand_number;
               var options                    = {
                                                  'stand_id'         : stand_id,
                                                  'stand_name_input' : stand_name_input_id,
-                                                 'stand_number'     : last_stand_number
+                                                 'stand_number'     : last_stand_number,
+                                                 'input_name'       : input_name,
                                                };
 
               $('#stand_container').loadTemplate("#stand_template",options,{append:true});                              
               bind_stand_tagInput(last_stand_number);
               
               $('#stand_heading_table_before_stand').before(stand_name_heading_element);
-              $('#stand_item_table_before_stand').before(stand_name_heading_element);
+              // $('#stand_item_table_before_stand').before(stand_name_heading_element);
               
               bing_change_stand_name(last_stand_number);
               bind_remove_stand();
-              refresh_stand_table();
+              // refresh_stand_table();
           });       
         /* --------- Jquery template - create new image item -----------*/ 
           $('#create_image_template_btn').on('click', function(){
@@ -760,34 +738,124 @@
       /* -------- bind - tagInput - stand item ----------*/
       function bind_stand_tagInput(id)
       {
-        $("#stand_"+id).tagsInput({
+        $("#stand_"+id).tagsInput({          
                                   width       : "auto",
                                   defaultText : "{{ trans('product.productItem_item_stand_create') }}",
                                   height      : '100px',
                                   width       : '600px',
                                   removeText  : "{{ trans('product.productItem_item_stand_remove') }}",  
                                   onAddTag    : function(){
+
                                                             refresh_stand_table();
+                                                            // console.log($("#stand_"+id).tagsinput('items'));
                                                               // console.log(table_data);
                                                           },
                                   onRemoveTag : function(){
-                                                              $('#stand_'+id+'_tagsinput > .tag').each(function(i,v){
-                                                                  console.log($(this).find('span').text());
-                                                              });
+                                                            refresh_stand_table();
+                                                              // $('#stand_'+id+'_tagsinput > .tag').each(function(i,v){
+                                                              //     // console.log($(this).find('span').text());
+                                                              // });
                                                           },
 
-                              });                              
+                              });                                                              
       }  
       /* -------- 更新規格資料表資料欄位 ----------*/
       function refresh_stand_table()
       {
-        var table_data = generate_stand_item_table_data();
-        var total_stand_name = $('#stand_container > div').length;
-        var html = generate_stand_item_table_template(table_data,total_stand_name);
+        var table_data       = generate_stand_item_table_data();   // 新產出來的規格表格資料
+        var total_stand_name = $('#stand_container > div').length;  // 表格名稱數目
+
+        var current_stand_table_data = fetch_current_stand_table_data();  // 修改之前的表格資料
+// console.log(table_data);
+// console.log(current_stand_table_data);
+
+        table_data = match_stand_table_data(current_stand_table_data, table_data);
+        var html             = generate_stand_item_table_template(table_data,total_stand_name);
         $('#product_stand_item_container').children().remove();
         $('#product_stand_item_container').append(html);
         initialIChecked();         
       }
+
+      /* -------- 比對規格資料 ----------*/
+      function match_stand_table_data(old_data, new_data)
+      {
+        if(old_data == [])
+        {
+          return new_data;
+        }
+        else
+        {
+          new_data.forEach(function(new_v ,new_i){
+              var match = false
+              var new_total_stand_name = new_v.length;
+              old_data.forEach(function(old_v, old_i){
+                  var old_total_stand_name = old_v.stand_item.length;
+                  // console.log(old_total_stand_name);
+                  if(old_total_stand_name == new_total_stand_name)
+                  {
+                      if(old_v.stand_item.join() == new_v.join())
+                      {
+                          var stand_obj = {};
+                          stand_obj.stand_item = new_v;
+                          stand_obj.inventory = old_v.inventory;
+                          stand_obj.price = old_v.price;
+                          new_data[new_i] = stand_obj;
+                          match = true;
+                      }                
+                  }
+                  else if(new_total_stand_name > old_total_stand_name)
+                  {
+                    if(!match)
+                    {
+                       match = old_v.stand_item.every(function(old_value){
+                            return new_v.indexOf(old_value) != -1;
+                        });
+                       if(match)
+                       {
+                          var stand_obj = {};
+                          stand_obj.stand_item = new_v;
+                          stand_obj.inventory = old_v.inventory;
+                          stand_obj.price = old_v.price;
+                          new_data[new_i] = stand_obj;
+                          match = true;
+                       }                      
+                     }
+                  }
+              });
+              if(!match)
+              {
+                var stand_obj = {};
+                stand_obj.stand_item = new_data[new_i];
+                stand_obj.inventory = 0;
+                stand_obj.price = 0;              
+                new_data[new_i] = stand_obj;
+              }
+
+          });
+
+          return new_data;
+        }
+      }
+      /* -------- 抓取目前規格表中的資料 ----------*/
+      function fetch_current_stand_table_data()
+      {
+        var current_stand_data_arr = [];
+        $('#product_stand_item_container > tr').each(function(i,v){
+          var stand_table_tr_data = {};
+          var table_tr_stand_item = [];
+            $(this).find('.stand_item').each(function(i_1,v_1){
+                table_tr_stand_item[i_1] = $(this).text();
+            });
+            stand_table_tr_data.stand_item = table_tr_stand_item;
+            stand_table_tr_data.price = $(this).find('.stand_price').val();
+            stand_table_tr_data.inventory = $(this).find('.stand_inventory').val();
+            
+            current_stand_data_arr[i] = stand_table_tr_data;
+        });
+        return current_stand_data_arr;
+      }
+
+
       /* -------- 產出規格template html ----------*/
       function generate_stand_item_table_template(/* Array */ array, total_stand_name){
         var html = "";
@@ -798,29 +866,30 @@
           html += '</td>';     
           for(var i =0 ;i < total_stand_name; i++)
           {
-            if(!v[i])
+            if(!v.stand_item[i])
             {
-              html += '<td></td>';
+              html += '<td><input type="hidden" name="product_stand_'+i+'[]"></td>';
             }
             else
             {
-              html += '<td>'+v[i]+'</td>';
+              html += '<td class="stand_item">'+v.stand_item[i]+'<input type="hidden" name="product_stand_'+i+'[]" value="'+v.stand_item[i]+'"></td>';
             }
           }
-          html += '<td>價格</td>';
-          html += '<td>庫存</td>';
+          html += '<td><input class="form-control stand_price" type="text" name="product_stand_price_'+i+'" value="'+v.price+'"></td>';
+          html += '<td><input class="form-control stand_inventory" type="text" name="product_stand_inventory_'+i+'" value="'+v.inventory+'"></td>';
           html += '</tr>';
         });
         return html;
 
       }      
+
       /* -------- 產出規格表中的資料 ----------*/
       function generate_stand_item_table_data(){
         var stand_item_container = [];
         $('.stand_item_container').each(function(i,v){
           var stand_item_arr = [];
           $(this).find('.tagsinput > .tag').each(function(i,v){
-              stand_item_arr[i] = $(this).find('span').text();
+              stand_item_arr[i] = $(this).find('span').text().trim();
           });
           stand_item_container[i] = stand_item_arr;
         });
@@ -958,24 +1027,24 @@
         var each_insert_total = returnEachInsertTotal(stand_each_total,i);  //  每次插入的數目
         var insert_period     = (v.length-1)*each_insert_total;       //  每隔幾次要再插入
         var total_insert_time = returnTotalInsertTime(stand_each_total,i);  //  總共進行幾次each_insert_total     
-      v.forEach(function(v_1,i_1){
-        var start_position = i_1*each_insert_total;
-        // console.log(start_position);
-        for(var times = 0 ; times < total_insert_time ;times++)
-        {
-          // console.log(times*each_insert_total+start_position);
-          var now_position = times*each_insert_total*(v.length)+start_position;
-          // console.log(now_position);
-  // console.log(now_position++);
-          // console.log(now_position);
-          for(var remain_insert = each_insert_total ; remain_insert > 0 ;remain_insert--)
+        v.forEach(function(v_1,i_1){
+          var start_position = i_1*each_insert_total;
+          // console.log(start_position);
+          for(var times = 0 ; times < total_insert_time ;times++)
           {
+            // console.log(times*each_insert_total+start_position);
+            var now_position = times*each_insert_total*(v.length)+start_position;
             // console.log(now_position);
-            stand_arr[now_position++].push(v_1);
-            // now_position++;
+    // console.log(now_position++);
+            // console.log(now_position);
+            for(var remain_insert = each_insert_total ; remain_insert > 0 ;remain_insert--)
+            {
+              // console.log(now_position);
+              stand_arr[now_position++].push(v_1);
+              // now_position++;
+            }
           }
-        }
-      });
+        });
       });   
       return stand_arr;   
   }

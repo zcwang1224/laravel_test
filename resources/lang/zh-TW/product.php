@@ -69,10 +69,13 @@ return [
 	'productItem_item_seo_keyword'     => '關鍵字',	
 
 	// Item Stand
-	'productItem_item_stand_title'	=> '商品規格',
-	'productItem_item_stand_create' => '新增規格',
-	'productItem_item_stand_remove'	=> '移除規格',
-	'productItem_item_stand_name'	=> '規格名稱',
+	'productItem_item_stand_title'     => '商品規格',
+	'productItem_item_stand_create'    => '新增規格',
+	'productItem_item_stand_remove'    => '移除規格',
+	'productItem_item_stand_name'      => '規格名稱',
+	'productIten_item_stand_price'     => '價格',
+	'productIten_item_stand_inventory' => '庫存',	
+
 	// Item Images
 	'productItem_item_upload_image'	=> '圖片上傳',
 

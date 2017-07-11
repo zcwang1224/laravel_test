@@ -118,11 +118,31 @@ class ProductItem extends Model
     /**
      * productItemImage Model 一對多設定
      *
-     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     * @return \Illuminate\Database\Eloquent\Relations\hasMany
      */
 	public function productItemImages()
 	{
 		return $this->hasMany('app\models\ProductItemImage', 'product_item_id', 'product_item_id');
 	}
+
+    /**
+     * Stand Model 一對多設定
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\hasMany
+     */
+	public function stands()
+	{
+		return $this->hasMany('app\models\Stand', 'product_item_id', 'product_item_id');
+	}
+
+    /**
+     * ProductStand Model 一對多設定
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\hasMany
+     */
+	public function productStands()
+	{
+		return $this->hasMany('app\models\ProductStand', 'product_item_id', 'product_item_id');
+	}		
 
 }

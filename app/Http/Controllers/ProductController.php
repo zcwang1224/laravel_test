@@ -10,7 +10,10 @@ use app\Models\Product;
 use app\Models\ProductCategory;
 use app\Models\ProductItem;
 use app\Models\ProductItemImage;
-
+use app\Models\Stand;
+use app\Models\StandItem;
+use app\Models\ProductStand;
+use app\Models\ProductStandItem;
 class ProductController extends Controller
 {
     /**
@@ -481,8 +484,11 @@ class ProductController extends Controller
         {
             // 上層分類下拉選單
             $productCategories = ProductCategory::all();
+            $productItem->load(['stands','stands.standItems','productStands','productStands.productStandItems']);
+      // Log::info($productItem);
             if($request->isMethod('post'))
             {
+                Log::info($request);
                 /* -------- Validation Form Data -------- */
                 $this->validate($request, [
                     'name'            => 'required|max:100',
@@ -511,6 +517,8 @@ class ProductController extends Controller
                 $productItem->seo_description = $updateData['seo_description'];
                 $productItem->seo_keyword     = $updateData['seo_keyword'];
 
+
+                // 相關產品
                 $productItem->itemHasRelated()->detach();
                 if(!is_null($updateData['related_items']))
                 {
@@ -518,6 +526,7 @@ class ProductController extends Controller
                     $productItem->itemHasRelated()->attach($related_ids);
                 }
 
+                // 商品圖片
                 $productItem->productItemImages()->delete();
                 if(isset($updateData['multiple_image_comment']))
                 {
@@ -530,7 +539,54 @@ class ProductController extends Controller
                         $productItemImage->save();
                     }                    
                 }
+                // 規格名稱 - stand name
+                $productItem->stands()->delete();
+                $stand_name_arr = array();
+                if(isset($updateData['stand_name']))
+                {
+                    foreach($updateData['stand_name'] as $stand_key => $stand_value)
+                    {
+                        $stand                  = new Stand;
+                        $stand->stand_name      = $stand_value;
+                        $stand->product_item_id = $productItem->product_item_id;
+                        $stand->stand_item      = $updateData['stand_'.$stand_key];                       
+                        $stand->save();
+                        $stand_name_arr[$stand_key] = $stand;
+                        // 規格項目 - stand item
+                        foreach(explode(',',$updateData['stand_'.$stand_key]) as $stand_item_key => $stand_item_value)
+                        {
+                            $standItem = new StandItem;
+                            $standItem->stand_item_name = $stand_item_value;
+                            $standItem->stand_id = $stand->stand_id;
+                            $standItem->save();                                
+                        }
+                    }   
+                }
+                // 商品規格
+                
+                $count_product_stand = count($updateData['product_stand_0']);
+                $count_stand_name    = count($updateData['stand_name']);
+                for($i = 0 ; $i < $count_product_stand ; $i++)
+                {
+                    $productStand = new ProductStand;
+                    $productStand->product_item_id = $productItem->product_item_id;
+                    $productStand->price = $updateData['product_stand_price_'.$i];
+                    $productStand->inventory = $updateData['product_stand_inventory_'.$i];
+                    // $productStand->product_stand_number = $updateData['product_stand_price_'.$i];
+                    $productStand->save();
+                    for($j = 0 ; $j < $count_stand_name ; $j++)
+                    {
+                        $productStandItem                   = new ProductStandItem;
+                        $productStandItem->product_stand_id = $productStand->product_stand_id;
+                        $productStandItem->stand_id         = $stand_name_arr[$j]->stand_id;
+                        $productStandItem->stand_item       = $updateData['product_stand_'.$j][$i];
+                        $productStandItem->save();
+                    }   
+                }
 
+
+                // Log::info($productItem->stands);
+                // Log::info($inputStandName->intersect($productItem->stands));
 
                 /* -------- Image Upload --------  */
                 // if($request->file('image'))
@@ -548,9 +604,10 @@ class ProductController extends Controller
                 // }
 
                 $productItem->save();   
-                
+               
                 return redirect()->action('ProductController@item');             
             }
+            
             $this->data['productCategories'] = $productCategories;
             $this->data['productItem']       = $productItem;
             return view('admin.content.product.item.edit',$this->data);
