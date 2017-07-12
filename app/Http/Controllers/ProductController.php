@@ -489,6 +489,7 @@ class ProductController extends Controller
             if($request->isMethod('post'))
             {
                 Log::info($request);
+                // exit();
                 /* -------- Validation Form Data -------- */
                 $this->validate($request, [
                     'name'            => 'required|max:100',
@@ -544,16 +545,16 @@ class ProductController extends Controller
                 $stand_name_arr = array();
                 if(isset($updateData['stand_name']))
                 {
-                    foreach($updateData['stand_name'] as $stand_key => $stand_value)
+                    foreach($updateData['stand_name_number'] as $stand_name_number_key => $stand_name_number_value)
                     {
                         $stand                  = new Stand;
-                        $stand->stand_name      = $stand_value;
+                        $stand->stand_name      = $updateData['stand_name'][$stand_name_number_key];
                         $stand->product_item_id = $productItem->product_item_id;
-                        $stand->stand_item      = $updateData['stand_'.$stand_key];                       
+                        $stand->stand_item      = $updateData['stand_'.$stand_name_number_value];                       
                         $stand->save();
-                        $stand_name_arr[$stand_key] = $stand;
+                        $stand_name_arr[$stand_name_number_key] = $stand;
                         // 規格項目 - stand item
-                        foreach(explode(',',$updateData['stand_'.$stand_key]) as $stand_item_key => $stand_item_value)
+                        foreach(explode(',',$updateData['stand_'.$stand_name_number_value]) as $stand_item_key => $stand_item_value)
                         {
                             $standItem = new StandItem;
                             $standItem->stand_item_name = $stand_item_value;
@@ -563,26 +564,91 @@ class ProductController extends Controller
                     }   
                 }
                 // 商品規格
-                
-                $count_product_stand = count($updateData['product_stand_0']);
-                $count_stand_name    = count($updateData['stand_name']);
-                for($i = 0 ; $i < $count_product_stand ; $i++)
+                if(isset($updateData['product_stand_0']) && isset($updateData['stand_name']))
                 {
-                    $productStand = new ProductStand;
-                    $productStand->product_item_id = $productItem->product_item_id;
-                    $productStand->price = $updateData['product_stand_price_'.$i];
-                    $productStand->inventory = $updateData['product_stand_inventory_'.$i];
-                    // $productStand->product_stand_number = $updateData['product_stand_price_'.$i];
-                    $productStand->save();
-                    for($j = 0 ; $j < $count_stand_name ; $j++)
+                    $count_product_stand = count($updateData['product_stand_0']);
+                    $count_stand_name    = count($updateData['stand_name']);
+                    $product_item_ids    = array();
+                    // 刪除不存在資料庫中沒有對應的product stand
+                    for($i = 0 ; $i < $count_product_stand ; $i++)
                     {
-                        $productStandItem                   = new ProductStandItem;
-                        $productStandItem->product_stand_id = $productStand->product_stand_id;
-                        $productStandItem->stand_id         = $stand_name_arr[$j]->stand_id;
-                        $productStandItem->stand_item       = $updateData['product_stand_'.$j][$i];
-                        $productStandItem->save();
-                    }   
+                        $product_item_ids[$i] = $updateData['product_stand_id_'.$i];
+                    }                 
+                    $toBeDeletes = $productItem->productStands->whereNotIn('product_stand_id',$product_item_ids);
+                    foreach ($toBeDeletes as $key => $value) {
+                        $toBeDelete = ProductStand::findOrFail($value->product_stand_id);
+                        $toBeDelete->delete();
+                    }
+
+                    // 存入資料庫
+                    for($i = 0 ; $i < $count_product_stand ; $i++)
+                    {
+
+                        if($updateData['product_stand_id_'.$i] != 'null' && $updateData['product_stand_id_'.$i] != 'undefined')
+                        {
+                            $productStand            = ProductStand::with(['productStandItems'])->findOrFail($updateData['product_stand_id_'.$i]);
+                            $productStand->price     = $updateData['product_stand_price_'.$i];
+                            $productStand->inventory = $updateData['product_stand_inventory_'.$i];
+                            $productStand->save();
+                            $old_stand_item = array();
+                            foreach($productStand->productStandItems as $productStandItem_key => $productStandItem_value)
+                            {
+                                $old_stand_item[$productStandItem_key] = $productStandItem_value->stand_item;
+                            }
+                            for($j = 0 ; $j < $count_stand_name ; $j++)
+                            {
+                                if(!in_array($updateData['product_stand_'.$j][$i], $old_stand_item))
+                                {
+                                    $productStandItem                   = new ProductStandItem;
+                                    $productStandItem->product_stand_id = $productStand->product_stand_id;
+                                    $productStandItem->stand_id         = $stand_name_arr[$j]->stand_id;
+                                    $productStandItem->stand_item       = $updateData['product_stand_'.$j][$i];
+                                    $productStandItem->save();                                    
+                                }      
+                            }
+                        }
+                        else
+                        {
+                            $productStand                  = new ProductStand;
+                            $productStand->product_item_id = $productItem->product_item_id;
+                            $productStand->price           = $updateData['product_stand_price_'.$i];
+                            $productStand->inventory       = $updateData['product_stand_inventory_'.$i];
+                            // $productStand->product_stand_number = $updateData['product_stand_price_'.$i];
+                            $productStand->save();
+                            for($j = 0 ; $j < $count_stand_name ; $j++)
+                            {
+                                $productStandItem                   = new ProductStandItem;
+                                $productStandItem->product_stand_id = $productStand->product_stand_id;
+                                $productStandItem->stand_id         = $stand_name_arr[$j]->stand_id;
+                                $productStandItem->stand_item       = $updateData['product_stand_'.$j][$i];
+                                $productStandItem->save();
+                            }                             
+                        }
+                    }                    
                 }
+                else
+                {
+                    foreach($productItem->productStands as $productStand_key => $productStand_value)
+                    {
+                        foreach($productStand_value->productStandItems as $productStandItem_key => $productStandItem_value)
+                        {
+                            $productStandItem_value->delete();
+                        }
+                        $productStand_value->delete();
+
+                    }
+
+                    foreach($productItem->stands as $stand_key => $stand_value)
+                    {
+                        foreach($stand_value->standItems as $standItem_key => $standItem_value)
+                        {
+                            $standItem_value->delete();
+                        }
+                        $stand_value->delete();
+                        
+                    }
+                }
+
 
 
                 // Log::info($productItem->stands);

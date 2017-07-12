@@ -322,9 +322,10 @@
                       </div>    
                       <br />
                       {{-- 規格設定 --}}
-                      <div id="stand_container">
+                      <div id="stand_container" >
                       @foreach($productItem->stands as $stand_k => $stand_v)
                         <div class="control-group stand_item_container" data-stand_number="{{ $stand_k }}">
+                          <input type="hidden" name="stand_name_number[]" value="{{ $stand_k }}">
                           <!-- <label class="control-label col-md-3 col-sm-3 col-xs-12">Input Tags</label> -->
                           <div class="col-md-3 col-sm-4 col-xs-4">
                             <input type="text" name="stand_name[]" class="form-control" value="{{ $stand_v->stand_name }}" placeholder="{{ trans('default.default_please_input',['type' => trans('product.productItem_item_stand_name')]) }}" id="stand_name_input_{{$stand_k}}">
@@ -360,7 +361,8 @@
                         {{-- 表格內容 --}}
                         <tbody id="product_stand_item_container"> 
                         @foreach($productItem->productStands as $productStands_key => $productStands_value)   
-                          <tr class="even pointer">
+                          <tr class="even pointer" data-product_stand_id="{{$productStands_value->product_stand_id}}">
+                            <input type="hidden" name="product_stand_id_{{$loop->index}}" value="{{$productStands_value->product_stand_id}}">
                             <td class="a-center ">
                               <input type="checkbox" class="flat" name="stand_item_table" data-checkbox_name="stand_item_table" >
                             </td>
@@ -524,6 +526,8 @@
     <!-- Jquery Template - stand template -->
     <script type="text/html" id="stand_template">
       <div class="control-group stand_item_container" data-template-bind='[{"attribute": "data-stand_number", "value": "stand_number"}]'>
+        <input type="hidden" name="stand_name_number[]" data-template-bind='[
+     {"attribute": "value", "value": "stand_number"}]'>
         <!-- <label class="control-label col-md-3 col-sm-3 col-xs-12">Input Tags</label> -->
         <div class="col-md-3 col-sm-6 col-xs-6">
           <input type="text" name="stand_name[]" class="form-control" data-id="stand_name_input" placeholder="{{ trans('default.default_please_input',['type' => trans('product.productItem_item_stand_name')]) }}">
@@ -795,11 +799,12 @@
                   {
                       if(old_v.stand_item.join() == new_v.join())
                       {
-                          var stand_obj = {};
-                          stand_obj.stand_item = new_v;
-                          stand_obj.inventory = old_v.inventory;
-                          stand_obj.price = old_v.price;
-                          new_data[new_i] = stand_obj;
+                          var stand_obj              = {};
+                          stand_obj.stand_item       = new_v;
+                          stand_obj.product_stand_id = old_v.product_stand_id;
+                          stand_obj.inventory        = old_v.inventory;
+                          stand_obj.price            = old_v.price;
+                          new_data[new_i]            = stand_obj;
                           match = true;
                       }                
                   }
@@ -812,23 +817,25 @@
                         });
                        if(match)
                        {
-                          var stand_obj = {};
-                          stand_obj.stand_item = new_v;
-                          stand_obj.inventory = old_v.inventory;
-                          stand_obj.price = old_v.price;
-                          new_data[new_i] = stand_obj;
-                          match = true;
+                          var stand_obj              = {};
+                          stand_obj.stand_item       = new_v;
+                          stand_obj.product_stand_id = old_v.product_stand_id;
+                          stand_obj.inventory        = old_v.inventory;
+                          stand_obj.price            = old_v.price;
+                          new_data[new_i]            = stand_obj;
+                          match                      = true;
                        }                      
                      }
                   }
               });
               if(!match)
               {
-                var stand_obj = {};
-                stand_obj.stand_item = new_data[new_i];
-                stand_obj.inventory = 0;
-                stand_obj.price = 0;              
-                new_data[new_i] = stand_obj;
+                var stand_obj              = {};
+                stand_obj.stand_item       = new_data[new_i];
+                stand_obj.product_stand_id = null;
+                stand_obj.inventory        = 0;
+                stand_obj.price            = 0;              
+                new_data[new_i]            = stand_obj;
               }
 
           });
@@ -847,6 +854,7 @@
                 table_tr_stand_item[i_1] = $(this).text();
             });
             stand_table_tr_data.stand_item = table_tr_stand_item;
+            stand_table_tr_data.product_stand_id = $(this).data('product_stand_id');
             stand_table_tr_data.price = $(this).find('.stand_price').val();
             stand_table_tr_data.inventory = $(this).find('.stand_inventory').val();
             
@@ -860,19 +868,20 @@
       function generate_stand_item_table_template(/* Array */ array, total_stand_name){
         var html = "";
         array.forEach(function(v, i){
-          html += '<tr class="even pointer">';
+          html += '<tr class="even pointer" data-product_stand_id="'+v.product_stand_id+'">';
+          html += '<input type="hidden" name="product_stand_id_'+i+'" value="'+v.product_stand_id+'">';
           html += '<td class="a-center ">';
           html += '<input type="checkbox" class="flat" name="stand_item_table" data-checkbox_name="stand_item_table" >';
           html += '</td>';     
-          for(var i =0 ;i < total_stand_name; i++)
+          for(var j =0 ;j < total_stand_name; j++)
           {
-            if(!v.stand_item[i])
+            if(!v.stand_item[j])
             {
-              html += '<td><input type="hidden" name="product_stand_'+i+'[]"></td>';
+              html += '<td><input type="hidden" name="product_stand_'+j+'[]"></td>';
             }
             else
             {
-              html += '<td class="stand_item">'+v.stand_item[i]+'<input type="hidden" name="product_stand_'+i+'[]" value="'+v.stand_item[i]+'"></td>';
+              html += '<td class="stand_item">'+v.stand_item[j]+'<input type="hidden" name="product_stand_'+j+'[]" value="'+v.stand_item[j]+'"></td>';
             }
           }
           html += '<td><input class="form-control stand_price" type="text" name="product_stand_price_'+i+'" value="'+v.price+'"></td>';
@@ -880,7 +889,6 @@
           html += '</tr>';
         });
         return html;
-
       }      
 
       /* -------- 產出規格表中的資料 ----------*/
