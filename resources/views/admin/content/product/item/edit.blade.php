@@ -766,15 +766,12 @@
       /* -------- 更新規格資料表資料欄位 ----------*/
       function refresh_stand_table()
       {
-        var table_data       = generate_stand_item_table_data();   // 新產出來的規格表格資料
-        var total_stand_name = $('#stand_container > div').length;  // 表格名稱數目
+        var table_data               = generate_stand_item_table_data();    // 新產出來的規格表格資料
+        var total_stand_name         = $('#stand_container > div').length;  // 表格名稱數目
+        var current_stand_table_data = fetch_current_stand_table_data();    // 修改之前的表格資料
+        table_data                   = match_stand_table_data(current_stand_table_data, table_data);
+        var html                     = generate_stand_item_table_template(table_data,total_stand_name);
 
-        var current_stand_table_data = fetch_current_stand_table_data();  // 修改之前的表格資料
-// console.log(table_data);
-// console.log(current_stand_table_data);
-
-        table_data = match_stand_table_data(current_stand_table_data, table_data);
-        var html             = generate_stand_item_table_template(table_data,total_stand_name);
         $('#product_stand_item_container').children().remove();
         $('#product_stand_item_container').append(html);
         initialIChecked();         
@@ -790,11 +787,12 @@
         else
         {
           new_data.forEach(function(new_v ,new_i){
-              var match = false
+
+              var match                = false;
               var new_total_stand_name = new_v.length;
+
               old_data.forEach(function(old_v, old_i){
                   var old_total_stand_name = old_v.stand_item.length;
-                  // console.log(old_total_stand_name);
                   if(old_total_stand_name == new_total_stand_name)
                   {
                       if(old_v.stand_item.join() == new_v.join())
@@ -1031,10 +1029,9 @@
         stand_arr[i] = [];
       }
       array.forEach(function(v,i){
-        // console.log(stand_each_total[i]);
-        var each_insert_total = returnEachInsertTotal(stand_each_total,i);  //  每次插入的數目
-        var insert_period     = (v.length-1)*each_insert_total;       //  每隔幾次要再插入
-        var total_insert_time = returnTotalInsertTime(stand_each_total,i);  //  總共進行幾次each_insert_total     
+        var each_insert_total = returnEachInsertTotal(stand_each_total,i);    //  每次插入的數目
+        var insert_period     = (v.length-1)*each_insert_total;               //  每隔幾次要再插入
+        var total_insert_time = returnTotalInsertTime(stand_each_total,i);    //  總共進行幾次each_insert_total     
         v.forEach(function(v_1,i_1){
           var start_position = i_1*each_insert_total;
           // console.log(start_position);
