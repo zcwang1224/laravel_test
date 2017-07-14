@@ -18,7 +18,7 @@ Route::get('/', function () {
 // Authentication Routes...
 Route::get('login', 'Auth\LoginController@showLoginForm')->name('login');
 Route::post('login', 'Auth\LoginController@login');
-Route::post('logout', 'Auth\LoginController@logout')->name('logout');
+Route::get('logout', 'Auth\LoginController@logout')->name('logout');
 
 // Registration Routes...
 Route::get('register', 'Auth\RegisterController@showRegistrationForm')->name('register');
@@ -39,6 +39,70 @@ Route::group(['middleware' => 'auth', 'prefix' => 'admin'], function(){
 
 	/* ----------------- 管理後台首頁 ----------------- */
 	Route::get('/index', 'IndexController@index')->name('admin_index');
+
+	/* ----------------- 管理後台 - 會員管理 ----------------- */
+	Route::group(['prefix' => 'member'],function(){
+		/* 首頁 */
+		Route::get('/', 'MemberController@index');
+		Route::get('/index', 'MemberController@index')
+				->name('admin_member_index');
+
+		/* 首頁 - Update */
+		Route::post('/edit', 'MemberController@edit')
+				->name('admin_member_index_edit');
+
+		// /* 分類 */
+		// Route::group(['prefix' => 'category'], function(){
+		// 	/* List */
+		// 	Route::get('/'		 	, 'NewsController@category');
+		// 	Route::get('/index'		, 'NewsController@category')
+		// 		 ->name('admin_news_category');
+
+		// 	/* Create */
+		// 	Route::match(['get','post'],'/create', 'NewsController@categoryCreate')
+		// 		 	->name('admin_news_category_create');
+
+		// 	/* Edit */
+		// 	Route::match(['get','post'],'/edit/{id}', 'NewsController@categoryEdit')
+		// 		 	->name('admin_news_category_edit')
+		// 		 	->where('id','[0-9]+');	
+
+		// 	/* Delete Single */	
+		// 	Route::post('/delete/{id}', 'NewsController@categoryDelete')
+		// 		 	->name('admin_news_category_delete')
+		// 		 	->where('id','[0-9]+');
+
+		// 	/* Multiple Delete and Hide , Show*/	
+		// 	Route::post('/MultipleAction', 'NewsController@categoryMultipleAction')
+		// 		 	->name('admin_news_category_multiple_action');
+		// 	Route::get('/ajaxCategoryRelatedItem', 'NewsController@ajaxCategoryRelatedItem')
+		// 		 	->name('admin_news_ajax_category_related_item');						
+		// });
+		// /* 項目 */
+		// Route::group(['prefix' => 'item'], function(){
+		// 	/* List */
+		// 	Route::get('/'		 	, 'NewsController@item');
+		// 	Route::get('/index'		, 'NewsController@item')
+		// 		 	->name('admin_news_item');
+
+		// 	/* Create */
+		// 	Route::match(['get','post'],'/create', 'NewsController@itemCreate')
+		// 		 	->name('admin_news_item_create');
+
+		// 	/* Edit */
+		// 	Route::match(['get','post'],'/edit/{id}', 'NewsController@itemEdit')
+		// 		 	->name('admin_news_item_edit')
+		// 		 	->where('id','[0-9]+');	
+
+		// 	/* Delete Single */	
+		// 	Route::post('/delete/{id}', 'NewsController@itemDelete')
+		// 			->name('admin_news_item_delete')->where('id','[0-9]+');
+
+		// 	/* Multiple Delete and Hide */	
+		// 	Route::post('/MultipleAction', 'NewsController@itemMultipleAction')
+		// 			->name('admin_news_item_multiple_action');			
+		// });		
+	});
 
 	/* ----------------- 管理後台 - 最新消息 ----------------- */
 	Route::group(['prefix' => 'news'],function(){
