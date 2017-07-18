@@ -23,11 +23,13 @@
       <div class="">
         <div class="page-title">
           <div class="title_left">
-            <h3>{{ trans('news.newsCategoryIndex_title') }} 
+            <h3>{{ trans_choice('member.member_title',2,[ 'type1' => trans('default.default_member'),
+                                                          'type2' => trans('default.default_list')]) }}
+              {{-- <small>Some examples to get you started</small> --}}
             </h3>
           </div>
           <div class="title_right">
-            <form method="GET" action="{{ route('admin_news_category') }}">
+            <form method="GET" action="{{ route('admin_member_item') }}">
               <div class="col-md-5 col-sm-5 col-xs-12 form-group pull-right top_search">
                 <div class="input-group">
                   <input type="text" name="search" class="form-control" placeholder="{{ trans('default.default_search') }}">
@@ -43,12 +45,12 @@
         <div class="row">
           <div class="col-md-12 col-sm-12 col-xs-12">
             <div class="x_panel">
-            <form method="POST" action="{{ route('admin_news_category_multiple_action') }}" id="multiple_action_form">
+            <form method="POST" action="{{ route('admin_member_category_multiple_action') }}" id="multiple_action_form">
               {{ csrf_field() }}
               <input type='hidden' name='checked_categories' id='checked_categories' value=''>
               <input type='hidden' name='multiple_action' id='multiple_action' value=''>
               <div class="x_title">
-                <h2>{{ trans('news.newsCategoryIndex_category_list') }} 
+                <h2>{{ trans('member.memberCategoryIndex_category_list') }} 
                   {{-- <small>Custom design</small> --}}
                 </h2>
                 <ul class="nav navbar-right panel_toolbox">
@@ -58,7 +60,7 @@
                     <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false"><i class="fa fa-wrench"></i></a>
                     <ul class="dropdown-menu" role="menu">
                       <li>
-                          <a href="{{ route('admin_news_category_create') }}">{{ trans('default.default_create') }}</a>
+                          <a href="{{ route('admin_member_category_create') }}">{{ trans('default.default_create') }}</a>
                       </li>
                       <li>
                           <a href="#" class="multiple_action" data-action='delete'>{{ trans('default.default_delete') }}</a>
@@ -83,47 +85,43 @@
                         <th>
                           <input type="checkbox" id="check-all" class="flat">
                         </th>
-                        <th class="column-title">{{ trans('news.newsCategoryIndex_category_title') }}</th>
-                        <th class="column-title">{{ trans('news.newsCategoryIndex_category_create_date') }} </th>
-                        <!-- <th class="column-title">Order </th>
-                        <th class="column-title">Bill to Name </th>
-                        <th class="column-title">Status </th>
-                        <th class="column-title">Amount </th> -->
+                        <th class="column-title">{{ trans('member.memberCategoryIndex_category_title') }}</th>
+                        <th class="column-title">分類</th>
+                        <th class="column-title">{{ trans('member.memberCategoryIndex_category_create_date') }} </th>
                         <th class="column-title no-link last">
                           <span class="nobr">
-                            {{ trans('news.newsCategoryIndex_category_action') }}
+                            {{ trans('member.memberCategoryIndex_category_action') }}
                           </span>
                         </th>
                         <th class="bulk-actions" colspan="7">
-                          <a class="antoo" style="color:#fff; font-weight:500;">{{ trans('news.newsCategoryIndex_category_selected') }} ( <span class="action-cnt"> </span> ) <i class="fa fa-chevron-down"></i></a>
+                          <a class="antoo" style="color:#fff; font-weight:500;">{{ trans('member.memberCategoryIndex_category_selected') }} ( <span class="action-cnt"> </span> ) <i class="fa fa-chevron-down"></i></a>
                         </th>
                       </tr>
                     </thead>
                     <tbody>
-                    @foreach($newsCategories as $key => $newsCategory)
-          						<tr class="even pointer category_item" data-category_id="{{ $newsCategory->news_category_id }}">
+                    @foreach($users as $key => $user)
+          						<tr class="even pointer category_item" data-category_id="{{ $user->id }}">
           							<td class="a-center ">
           							 	<input type="checkbox" class="flat" name="table_records">
           							</td>
           							
-          							<td class=" ">{{ $newsCategory->name }}</td>
-
-          							<td class=" ">{{ $newsCategory->created_at }}</td>
-          							<!-- <td class=" ">121000210 <i class="success fa fa-long-arrow-up"></i></td>
-          							<td class=" ">John Blank L</td>
-          							<td class=" ">Paid</td>
-          							<td class="a-right a-right ">$7.45</td> -->
+          							<td class=" ">{{ $user->name }}</td>
+                        <td class=" ">
+                        {{ implode(' | ',$user->roles()->pluck('display_name')->all()) }}
+                        
+                        </td>
+          							<td class=" ">{{ $user->created_at }}</td>
           							<td class="last">
 		                      <div class="btn-group  btn-group-sm">
 		                        <button class="btn btn-info" type="button">
-                              <a href="{{ route('admin_news_category_edit',['id'=>$newsCategory->news_category_id]) }}">
+                              <a href="{{ route('admin_member_item_edit',['id'=>$user->id]) }}">
                                 {{ trans('default.default_edit') }}
                               </a>
                             </button>
-                            <button class="single_action btn @if($newsCategory->deleted_at == null) btn-info @else btn-danger @endif" type="button" data-action='delete'>
+                            <button class="single_action btn @if($user->deleted_at == null) btn-info @else btn-danger @endif" type="button" data-action='delete'>
                               {{ trans('default.default_delete') }}
                             </button>
-		                        <button class="single_action btn @if($newsCategory->status == 1) btn-info @else btn-danger @endif" type="button" data-action="@if($newsCategory->status == 1) hide @else show @endif">
+		                        <button class="single_action btn @if($user->status == 1) btn-info @else btn-danger @endif" type="button" data-action="@if($user->status == 1) hide @else show @endif">
                               {{ trans('default.default_hide') }}
                             </button>
 		                      </div>							
@@ -138,7 +136,7 @@
               </div>
             </div>
           </div>
-          {{ $newsCategories->links() }}
+          {{ $users->links() }}
            
         </div>
       </div>
@@ -149,7 +147,7 @@
         $('.multiple_action').on('click',function(){
             var checked_str = getCheckedCategory();
             var action      = $(this).data('action');
-            var url         = "{{ route('admin_news_ajax_category_related_item') }}";
+            var url         = "{{ route('admin_member_ajax_category_related_item') }}";
             $('#checked_categories').val(checked_str); // form
             $('#multiple_action').val(action);         // form
             var check_related_item = checkRelatedItem(checked_str,url);

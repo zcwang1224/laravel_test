@@ -43,7 +43,11 @@ return [
 	'memberCategory_category_seo_description' => '描述',
 	'memberCategory_category_seo_keyword'     => '關鍵字',
 
-	'memberCategory_basic_setting' => '基本設定',
+	'memberCategory_basic_setting'      => '基本設定',
+	'memberCategory_permission_setting' => '權限設定',
+
+	'memberCategory_permission_news_title' => '最新消息權限',
+	'memberCategory_permission_product_title' => '商品權限',
 	// Item
 	'member_sidebar_item'              => '列表',
 	'memberItemIndex_item_list'        => '項目列表',	
@@ -60,26 +64,11 @@ return [
 	'memberItem_item_image'        => '圖片',
 	'memberItem_item_status'       => '狀態',
 	'memberItem_item_content'      => '內容設定',
+	'memberItem_item_name'		=> '姓名',
+	'memberItem_item_email'		=>	'E-MAIL',
+	'memberItem_item_mobile'	=> '手機號碼',
+	
 
-	//Item seo 
-	'memberItem_item_seo_setting'     => '優化設定',
-	'memberItem_item_seo_title'       => '標題',
-	'memberItem_item_seo_description' => '描述',
-	'memberItem_item_seo_keyword'     => '關鍵字',	
-
-	// Item Stand
-	'memberItem_item_stand_title'     => '會員中心規格',
-	'memberItem_item_stand_create'    => '新增規格',
-	'memberItem_item_stand_remove'    => '移除規格',
-	'memberItem_item_stand_name'      => '規格名稱',
-	'memberIten_item_stand_price'     => '價格',
-	'memberIten_item_stand_inventory' => '庫存',	
-
-	// Item Images
-	'memberItem_item_upload_image'	=> '圖片上傳',
-
-	// Item Relative Product
-	'memberItem_item_relative_setting'     => '相關會員中心',	
 ];
 
 

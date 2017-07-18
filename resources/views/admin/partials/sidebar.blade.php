@@ -32,14 +32,16 @@
               <li><a href="index3.html">Dashboard3</a></li>
             </ul>
           </li> 
-      {{-- -------------------- 會員中心 Member -------------------- --}}       
+      {{-- -------------------- 會員中心 Member -------------------- --}}   
+      @if(Auth::user()->can('news_index_view'))
           <li><a><i class="fa fa-cog"></i> {{ trans_choice('member.member_title', 0) }} <span class="fa fa-chevron-down"></span></a>
-            <ul class="nav child_menu">
+            <ul class="nav child_menu"> 
               <li><a href="{{ route('admin_member_index') }}">{{ trans('member.member_basic_setting') }}</a></li>
-              <li><a href="index2.html">{{ trans('member.memberCategoryIndex_category_list') }}</a></li>
-              <li><a href="index3.html">{{ trans('member.member_sidebar_item') }}</a></li>
+              <li><a href="{{ route('admin_member_category') }}">{{ trans('member.memberCategoryIndex_category_list') }}</a></li>
+              <li><a href="{{ route('admin_member_item') }}">{{ trans('member.member_sidebar_item') }}</a></li>
             </ul>
-          </li>         
+          </li>  
+      @endif                
       {{-- -------------------- 最新消息 News -------------------- --}}       
           <li><a><i class="fa fa-newspaper-o"></i> {{ trans('news.news_title') }} <span class="fa fa-chevron-down"></span></a>
             <ul class="nav child_menu">

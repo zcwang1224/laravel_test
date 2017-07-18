@@ -45,7 +45,7 @@ return [
     // L
     'default_list' => '列表',
     // M
-
+    'default_member' => '會員',
     // N
     'default_no' => '否',
     // O

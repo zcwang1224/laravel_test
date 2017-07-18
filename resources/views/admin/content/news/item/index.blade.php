@@ -28,16 +28,16 @@
             </h3>
           </div>
           <div class="title_right">
-            <div class="col-md-5 col-sm-5 col-xs-12 form-group pull-right top_search">
-              <div class="input-group">
-              <form method="GET" action="{{ route('admin_news_item') }}">
-                <input type="text" name="search" class="form-control" placeholder="{{ trans('default.default_search') }}">
-                <span class="input-group-btn">
-                  <button class="btn btn-default" type="submit">{{ trans('default.default_submit') }}</button>
-                </span>                
-              </form>
-              </div>
-            </div>
+            <form method="GET" action="{{ route('admin_news_item') }}">
+              <div class="col-md-5 col-sm-5 col-xs-12 form-group pull-right top_search">
+                <div class="input-group">
+                  <input type="text" name="search" class="form-control" placeholder="{{ trans('default.default_search') }}">
+                  <span class="input-group-btn">
+                    <button class="btn btn-default" type="submit">{{ trans('default.default_submit') }}</button>
+                  </span>       
+                </div>
+              </div>              
+            </form>
           </div>
         </div>
         <div class="clearfix"></div>

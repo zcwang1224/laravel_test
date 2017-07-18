@@ -51,59 +51,58 @@ Route::group(['middleware' => 'auth', 'prefix' => 'admin'], function(){
 		Route::post('/edit', 'MemberController@edit')
 				->name('admin_member_index_edit');
 
-		// /* 分類 */
-		// Route::group(['prefix' => 'category'], function(){
-		// 	/* List */
-		// 	Route::get('/'		 	, 'NewsController@category');
-		// 	Route::get('/index'		, 'NewsController@category')
-		// 		 ->name('admin_news_category');
+		/* 分類 */
+		Route::group(['prefix' => 'category'], function(){
+			/* List */
+			Route::get('/'		 	, 'MemberController@category');
+			Route::get('/index'		, 'MemberController@category')
+				 ->name('admin_member_category');
 
-		// 	/* Create */
-		// 	Route::match(['get','post'],'/create', 'NewsController@categoryCreate')
-		// 		 	->name('admin_news_category_create');
+			/* Create */
+			Route::match(['get','post'],'/create', 'MemberController@categoryCreate')
+				 	->name('admin_member_category_create');
 
-		// 	/* Edit */
-		// 	Route::match(['get','post'],'/edit/{id}', 'NewsController@categoryEdit')
-		// 		 	->name('admin_news_category_edit')
-		// 		 	->where('id','[0-9]+');	
+			/* Edit */
+			Route::match(['get','post'],'/edit/{role}', 'MemberController@categoryEdit')
+				 	->name('admin_member_category_edit')
+				 	->where('role','[0-9]+');	
 
-		// 	/* Delete Single */	
-		// 	Route::post('/delete/{id}', 'NewsController@categoryDelete')
-		// 		 	->name('admin_news_category_delete')
-		// 		 	->where('id','[0-9]+');
+			/* Delete Single */	
+			Route::post('/delete/{id}', 'MemberController@categoryDelete')
+				 	->name('admin_member_category_delete')
+				 	->where('id','[0-9]+');
 
-		// 	/* Multiple Delete and Hide , Show*/	
-		// 	Route::post('/MultipleAction', 'NewsController@categoryMultipleAction')
-		// 		 	->name('admin_news_category_multiple_action');
-		// 	Route::get('/ajaxCategoryRelatedItem', 'NewsController@ajaxCategoryRelatedItem')
-		// 		 	->name('admin_news_ajax_category_related_item');						
-		// });
-		// /* 項目 */
-		// Route::group(['prefix' => 'item'], function(){
-		// 	/* List */
-		// 	Route::get('/'		 	, 'NewsController@item');
-		// 	Route::get('/index'		, 'NewsController@item')
-		// 		 	->name('admin_news_item');
+			/* Multiple Delete and Hide , Show*/	
+			Route::post('/MultipleAction', 'MemberController@categoryMultipleAction')
+				 	->name('admin_member_category_multiple_action');
+			Route::get('/ajaxCategoryRelatedItem', 'MemberController@ajaxCategoryRelatedItem')
+				 	->name('admin_member_ajax_category_related_item');						
+		});
+		/* 項目 */
+		Route::group(['prefix' => 'item'], function(){
+			/* List */
+			Route::get('/'		 	, 'MemberController@item');
+			Route::get('/index'		, 'MemberController@item')
+				 	->name('admin_member_item');
 
-		// 	/* Create */
-		// 	Route::match(['get','post'],'/create', 'NewsController@itemCreate')
-		// 		 	->name('admin_news_item_create');
+			/* Create */
+			Route::match(['get','post'],'/create', 'MemberController@itemCreate')
+				 	->name('admin_member_item_create');
 
-		// 	/* Edit */
-		// 	Route::match(['get','post'],'/edit/{id}', 'NewsController@itemEdit')
-		// 		 	->name('admin_news_item_edit')
-		// 		 	->where('id','[0-9]+');	
+			/* Edit */
+			Route::match(['get','post'],'/edit/{user}', 'MemberController@itemEdit')
+				 	->name('admin_member_item_edit')
+				 	->where('user','[0-9]+');	
 
-		// 	/* Delete Single */	
-		// 	Route::post('/delete/{id}', 'NewsController@itemDelete')
-		// 			->name('admin_news_item_delete')->where('id','[0-9]+');
+			/* Delete Single */	
+			Route::post('/delete/{id}', 'MemberController@itemDelete')
+					->name('admin_member_item_delete')->where('id','[0-9]+');
 
-		// 	/* Multiple Delete and Hide */	
-		// 	Route::post('/MultipleAction', 'NewsController@itemMultipleAction')
-		// 			->name('admin_news_item_multiple_action');			
-		// });		
+			/* Multiple Delete and Hide */	
+			Route::post('/MultipleAction', 'MemberController@itemMultipleAction')
+					->name('admin_member_item_multiple_action');			
+		});		
 	});
-
 	/* ----------------- 管理後台 - 最新消息 ----------------- */
 	Route::group(['prefix' => 'news'],function(){
 		/* 首頁 */
