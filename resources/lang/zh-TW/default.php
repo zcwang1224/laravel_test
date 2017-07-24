@@ -60,6 +60,7 @@ return [
 
     // S
     'default_search' => '搜尋',
+    'default_select_all' => '全選',
     'default_show'   => '顯示',
     'default_submit' => '送出',
     'default_setting' => '設定',

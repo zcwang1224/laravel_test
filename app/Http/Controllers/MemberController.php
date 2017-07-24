@@ -309,6 +309,63 @@ class MemberController extends Controller
     } 
 
     /**
+     * Item Create Controller
+     * @param 
+     * @return \Illuminate\Http\Response
+     */
+    protected function itemCreate(Request $request)
+    {
+        try
+        {
+            $roles = Role::all();
+            if($request->isMethod('post'))
+            {
+                /* -------- Validation Form Data -------- */
+                $this->validate($request, [
+                    'name'     => 'required|max:100',
+                    'password' => 'required|min:6|confirmed',
+                    'email'    => 'required|email|unique:users,email',
+                ]); 
+
+                /* -------- Edit Form Data -------- */             
+                $updateData   = $request->all(); 
+                $user           = new User;
+                $user->name     = $updateData['name'];
+                $user->email    = $updateData['email'];
+                $user->password = bcrypt($updateData['password']);
+                if(isset($updateData['image']))
+                {
+                    $user->image  = $updateData['image'];
+                }
+                $user->mobile = $updateData['mobile'];
+                if(isset($updateData['status']) && $updateData['status']==1) 
+                {
+                    $user->status = 1;
+                }
+                else
+                {
+                    $user->status = 0;
+                }
+                $user->save(); 
+                /* -------- 修改分類 --------- */
+                $user->syncRoles($updateData['role']);
+               
+                return redirect()->action('MemberController@item');             
+            }
+            $this->data['roles'] = $roles;
+            return view('admin.content.member.item.create',$this->data);  
+
+        }
+        catch(Exception $e)
+        {
+            Log::error('------------------------------------------錯誤: ' . get_class($this) . '@itemEdit---------------------------------------------');
+            Log::error($e->getMessage());             
+            Log::error($e->getTraceAsString());
+            return view('error.500');
+        }
+    } 
+
+    /**
      * Item Edit Controller
      * @param 
      * @return \Illuminate\Http\Response
@@ -324,7 +381,6 @@ class MemberController extends Controller
                 $this->validate($request, [
                     'name'  => 'required|max:100',
                     'email' => 'email',
-                    'role'  => 'required'
                 ]); 
 
                 /* -------- Edit Form Data -------- */             
@@ -346,8 +402,10 @@ class MemberController extends Controller
                 }
                 $user->save(); 
                 /* -------- 修改分類 --------- */
-                $user->syncRoles($updateData['role']);
-               
+                if(isset($updateData['role']))
+                {
+                    $user->syncRoles($updateData['role']);
+                }
                 return redirect()->action('MemberController@item');             
             }
 
@@ -363,6 +421,70 @@ class MemberController extends Controller
             Log::error($e->getTraceAsString());
             return view('error.500');
         }
-    }         
+    } 
+
+    /**
+     * Category Index Multiple action
+     *  
+     * @param 
+     * @return \Illuminate\Http\Response
+     */
+    protected function itemMultipleAction(Request $request)
+    {
+        try
+        {
+            // Log::info($request);
+            $action                 = $request->input('multiple_action');
+            $checked_items_str = $request->input('checked_items');
+            if(!$checked_items_str == '' && $checked_items_str != null)
+            {
+                $itemArray = explode(',', $checked_items_str);
+
+                if(count($itemArray) > 0)
+                {
+                    switch ($action) 
+                    {
+                        case 'delete':
+                            foreach ($itemArray as $key => $item_id) 
+                            {
+                                $user = User::findOrFail($item_id);
+                                $user->delete();
+                            }
+                            return redirect()->action('MemberController@item');
+                            break;
+                        case 'hide':
+                            foreach ($itemArray as $key => $item_id) 
+                            {
+                                $user = User::findOrFail($item_id);
+                                $user->status = 0;
+                                $user->save();
+                            }
+                            return redirect()->action('MemberController@item');
+                            break; 
+                        case 'show':
+                            foreach ($itemArray as $key => $item_id) 
+                            {
+                                $user = User::findOrFail($item_id);
+                                $user->status = 1;
+                                $user->save();
+                            }
+                            return redirect()->action('MemberController@item');
+                            break;                                    
+                        default:
+                            # code...
+                            break;
+                    }                
+                }
+            }
+            return redirect()->action('NewsController@item');
+        }
+        catch(Exception $e)
+        {
+            Log::error('------------------------------------------錯誤: ' . get_class($this) . '@categoryMultipleAction---------------------------------------------');
+            Log::error($e->getMessage());             
+            Log::error($e->getTraceAsString());
+            return view('error.500');
+        }
+    }                 
 
 }

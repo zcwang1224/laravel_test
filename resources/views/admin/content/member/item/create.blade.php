@@ -37,7 +37,7 @@
                 <h3>{{ trans('news.newsItemCreate_item_title',['type' => trans('default.default_edit')]) }}</h3>
               </div>
             </div>
-            <form method="POST" action="{{ route('admin_news_item_edit',['id' => $newsItem->news_item_id]) }}" id="main_form" data-parsley-validate class="form-horizontal form-label-left" enctype="multipart/form-data">
+            <form method="POST" action="{{ route('admin_member_item_create') }}" id="main_form" data-parsley-validate class="form-horizontal form-label-left" enctype="multipart/form-data">
               {{ csrf_field() }}            
               <div class="clearfix"></div>
           {{-- --------- Validation Error 表單驗證錯誤訊息------------ --}}
@@ -56,7 +56,6 @@
                   <div class="x_panel">
                     <div class="x_title">
                       <h2>{{ trans('news.newsItemCreate_basic_setting_title') }}
-                      {{-- <small>different form elements</small> --}}
                       </h2>
                       <ul class="nav navbar-right panel_toolbox">
                         <li><a class="collapse-link"><i class="fa fa-chevron-up"></i></a>
@@ -65,30 +64,76 @@
                       <div class="clearfix"></div>
                     </div>
                     <div class="x_content">                     
-                      <br />  
-                  {{-- Category 分類 --}}    
+                      <br />     
+                  {{-- Name 姓名 --}}                      
                       <div class="form-group">
-                        <label class="control-label col-md-3 col-sm-3 col-xs-12">{{ trans('news.newsItemCreate_basic_category') }}</label>
-                        <div class="col-md-6 col-sm-6 col-xs-12">
-                          <select class="form-control" name="news_category">
-                          @foreach($newsCategories as $key => $newsCategory)
-                            <option value="{{ $newsCategory->news_category_id }}" @if($newsItem->news_category_id == $newsCategory->news_category_id) selected @endif>{{ $newsCategory->name }}</option>
-                          @endforeach               
-                          </select>
-                        </div>
-                      </div>                     
-                      <br />    
-                  {{-- Name 標題 --}}                      
-                      <div class="form-group">
-                        <label class="control-label col-md-3 col-sm-3 col-xs-12" for="first-name">{{ trans('news.newsItemCreate_basic_title') }}
+                        <label class="control-label col-md-3 col-sm-3 col-xs-12" for="first-name">{{ trans('member.memberItem_item_name') }}
                          <!-- <span class="required">*</span> -->
                         </label>
                         <div class="col-md-6 col-sm-6 col-xs-12">
-                          <input type="text" name="name" value="{{ $newsItem->name }}" class="form-control col-md-7 col-xs-12">
+                          <input type="text" name="name" value="" class="form-control col-md-7 col-xs-12">
                         </div>
                       </div>
                       <br />
+                  {{-- Password 密碼 --}} 
+                      <div class="form-group">
+                        <label class="control-label col-md-3 col-sm-3 col-xs-12" for="first-name">{{ trans('member.memberItem_item_password') }}
+                         <!-- <span class="required">*</span> -->
+                        </label>
+                        <div class="col-md-6 col-sm-6 col-xs-12">
+                          <input type="password" name="password" value="" class="form-control col-md-7 col-xs-12">
+                        </div>
+                      </div>
+                      <br />
+                  {{-- Password Confirm 密碼確認 --}} 
+                      <div class="form-group">
+                        <label class="control-label col-md-3 col-sm-3 col-xs-12" for="first-name">{{ trans('member.memberItem_item_password_confirm') }}
+                         <!-- <span class="required">*</span> -->
+                        </label>
+                        <div class="col-md-6 col-sm-6 col-xs-12">
+                          <input type="password" name="password_confirmation" value="" class="form-control col-md-7 col-xs-12">
+                        </div>
+                      </div>
+                      <br />                                            
+                  {{-- 分類設定 --}}
+                      <div class="form-group">
+                          <label class="control-label col-md-3 col-sm-3 col-xs-12" for="first-name">分類
+                          </label>
+                          <br>
+                          <div style="padding: 5px;position: relative;margin-left: 25%;margin-right: 25%">  
+                                <ul class="nav">
+                                @foreach($roles as $role_key => $role)
+                                  <li>
+                                    <label>
+                                      <input type="checkbox" name="role[]" value="{{ $role->name }}" required class="flat " /> {{ $role->display_name }}
+                                    </label>
+                                  </li>
+                                @endforeach
+                                </ul>
+                          </div>
+                      </div>                        
+                  {{-- email 信箱 --}}                      
+                      <div class="form-group">
+                        <label class="control-label col-md-3 col-sm-3 col-xs-12" for="first-name">{{ trans('member.memberItem_item_email') }}
+                         <!-- <span class="required">*</span> -->
+                        </label>
+                        <div class="col-md-6 col-sm-6 col-xs-12">
+                          <input type="text" name="email" value="{{ old('email') }}" class="form-control col-md-7 col-xs-12">
+                        </div>
+                      </div>
+                      <br /> 
+                  {{-- mobile 手機 --}}                      
+                      <div class="form-group">
+                        <label class="control-label col-md-3 col-sm-3 col-xs-12" for="first-name">{{ trans('member.memberItem_item_mobile') }}
+                         <!-- <span class="required">*</span> -->
+                        </label>
+                        <div class="col-md-6 col-sm-6 col-xs-12">
+                          <input type="text" name="mobile" value="{{ old('mobile') }}" class="form-control col-md-7 col-xs-12">
+                        </div>
+                      </div>
+                      <br />                                            
                   {{-- Image Upload 圖片上傳 --}}   
+                  {{--  
                       <div class="form-group">
                         <label class="control-label col-md-3 col-sm-3 col-xs-12" for="first-name"> {{ trans('news.newsItemCreate_basic_image') }}
                          <!-- <span class="required">*</span> -->
@@ -105,6 +150,7 @@
                         </div>
                       </div> 
                       <br /> 
+                  --}}    
                   {{-- Status 分類狀態 --}}                                              
                       <div class="form-group">
                         <label class="control-label col-md-3 col-sm-3 col-xs-12" for="first-name">{{ trans('news.newsItemCreate_basic_status') }}
@@ -112,7 +158,7 @@
                         </label>
                         <div class="col-md-6 col-sm-6 col-xs-12">
                           <label>
-                            <input type="checkbox" name="status" class="js-switch" value="1" @if($newsItem->status ==1) checked @endif/> {{ trans('default.default_checked') }}
+                            <input type="checkbox" name="status" class="js-switch" value="1" /> {{ trans('default.default_checked') }}
                           </label>
                         </div> 
                       </div>  
@@ -120,88 +166,7 @@
                   </div>
                 </div>
               </div>
-
-              
-              {{-- ------------------ CKEditor 設定------------------ --}}  
-              <div class="row">
-                <div class="col-md-12 col-sm-12 col-xs-12">
-                  <div class="x_panel">
-                    <div class="x_title">
-                      <h2>{{ trans('news.newsItemCreate_content_title') }} 
-                      {{-- <small>different form elements</small> --}}
-                      </h2>
-                      <ul class="nav navbar-right panel_toolbox">
-                        <li><a class="collapse-link"><i class="fa fa-chevron-up"></i></a>
-                        </li>
-                      </ul>
-                      <div class="clearfix"></div>
-                    </div>
-                    <div class="x_content">
-                      <br />
-                    {{-- CKEditor with Responsive FileSystem --}}
-                      <textarea id="content" name="content" class="form-control">{{ $newsItem->content or '' }}</textarea>
-                      <script src="//cdn.ckeditor.com/4.6.2/standard/ckeditor.js"></script>
-                      <script>
-                        var options = {
-                          filebrowserImageBrowseUrl: '{{ route("filemanager"        , ["type" => "Images"]) }}',
-                          filebrowserImageUploadUrl: '{{ route("filemanager_upload" , ["type" => "Images", "_token"]) }}',
-                          filebrowserBrowseUrl:      '{{ route("filemanager"        , ["type" => "Files"]) }}',
-                          filebrowserUploadUrl:      '{{ route("filemanager_upload" , ["type" => "Files", "_token"]) }}'
-                        };
-                      </script>
-                      <script>
-                      CKEDITOR.replace('content', options);
-                      </script>                      
-                    </div>
-                  </div>
-                </div>
-              </div>
-              {{-- ------------------ SEO 設定------------------ --}}             
-              <div class="row">
-                <div class="col-md-12 col-sm-12 col-xs-12">
-                  <div class="x_panel">
-                    <div class="x_title">
-                      <h2>{{ trans('news.newsItemCreate_seo_seo_title') }}
-                      {{-- <small>different form elements</small> --}}
-                      </h2>
-                      <ul class="nav navbar-right panel_toolbox">
-                        <li><a class="collapse-link"><i class="fa fa-chevron-up"></i></a>
-                        </li>
-                      </ul>
-                      <div class="clearfix"></div>
-                    </div>
-                    <div class="x_content">
-                      <br />
-                      <div class="form-group">
-                        <label class="control-label col-md-3 col-sm-3 col-xs-12" for="first-name">{{ trans('news.newsItemCreate_seo_title') }}
-                         <!-- <span class="required">*</span> -->
-                        </label>
-                        <div class="col-md-6 col-sm-6 col-xs-12">
-                          <input type="text" name="seo_title" value="{{ $newsItem->seo_title }}" class="form-control col-md-7 col-xs-12">
-                        </div>
-                      </div>
-                      <div class="form-group">
-                        <label class="control-label col-md-3 col-sm-3 col-xs-12" for="last-name">{{ trans('news.newsItemCreate_seo_description') }}
-                        <!-- <span class="required">*</span> -->
-                        </label>
-                        <div class="col-md-6 col-sm-6 col-xs-12">
-                          <input type="text" name="seo_description" value="{{ $newsItem->seo_description }}" class="form-control col-md-7 col-xs-12">
-                        </div>
-                      </div>
-                      <div class="form-group">
-                        <label class="control-label col-md-3 col-sm-3 col-xs-12" for="last-name">{{ trans('news.newsItemCreate_seo_keyword') }}
-                        <!-- <span class="required">*</span> -->
-                        </label>
-                        <div class="col-md-6 col-sm-6 col-xs-12">
-                          <input type="text" name="seo_keyword" value="{{ $newsItem->seo_keyword }}" class="form-control col-md-7 col-xs-12">
-                        </div>
-                      </div>  
-                    </div>
-                  </div>
-                </div>
-              </div>
               {{-- ------------------ 送出按鈕 ------------------ --}}
-              @if(Auth::user()->can('news_item_edit'))
               <div class="row">
                 <div class="col-md-12 col-sm-12 col-xs-12">
                   <div class="x_panel">
@@ -221,7 +186,6 @@
                   </div>
                 </div>
               </div> 
-              @endif
             </form> 
           </div>
         </div>      

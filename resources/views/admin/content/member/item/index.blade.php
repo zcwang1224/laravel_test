@@ -25,7 +25,6 @@
           <div class="title_left">
             <h3>{{ trans_choice('member.member_title',2,[ 'type1' => trans('default.default_member'),
                                                           'type2' => trans('default.default_list')]) }}
-              {{-- <small>Some examples to get you started</small> --}}
             </h3>
           </div>
           <div class="title_right">
@@ -45,33 +44,40 @@
         <div class="row">
           <div class="col-md-12 col-sm-12 col-xs-12">
             <div class="x_panel">
-            <form method="POST" action="{{ route('admin_member_category_multiple_action') }}" id="multiple_action_form">
+            <form method="POST" action="{{ route('admin_member_item_multiple_action') }}" id="multiple_action_form">
               {{ csrf_field() }}
-              <input type='hidden' name='checked_categories' id='checked_categories' value=''>
+              <input type='hidden' name='checked_items' id='checked_items' value=''>
               <input type='hidden' name='multiple_action' id='multiple_action' value=''>
               <div class="x_title">
                 <h2>{{ trans('member.memberCategoryIndex_category_list') }} 
-                  {{-- <small>Custom design</small> --}}
                 </h2>
                 <ul class="nav navbar-right panel_toolbox">
                   <li><a class="collapse-link"><i class="fa fa-chevron-up"></i></a>
                   </li>
                   <li class="dropdown">
+                  @if(Auth::user()->can('member_item_create') || Auth::user()->can('member_item_edit') || Auth::user()->can('member_item_delete'))                     
                     <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false"><i class="fa fa-wrench"></i></a>
                     <ul class="dropdown-menu" role="menu">
+                    @can('member_item_create')
                       <li>
-                          <a href="{{ route('admin_member_category_create') }}">{{ trans('default.default_create') }}</a>
+                          <a href="{{ route('admin_member_item_create') }}">{{ trans('default.default_create') }}</a>
                       </li>
+                    @endcan
+                    @can('member_item_delete')
                       <li>
                           <a href="#" class="multiple_action" data-action='delete'>{{ trans('default.default_delete') }}</a>
                       </li>
+                    @endcan
+                    @can('member_item_edit')
                       <li>
                           <a href="#" class="multiple_action" data-action='hide'>{{ trans('default.default_hide') }}</a>
                       </li>
                       <li>
                           <a href="#" class="multiple_action" data-action='show'>{{ trans('default.default_show') }}</a>
-                      </li>                                            
+                      </li> 
+                    @endcan                                           
                     </ul>
+                  @endif
                   </li>
                 </ul>
                 <div class="clearfix"></div>
@@ -86,7 +92,7 @@
                           <input type="checkbox" id="check-all" class="flat">
                         </th>
                         <th class="column-title">{{ trans('member.memberCategoryIndex_category_title') }}</th>
-                        <th class="column-title">分類</th>
+                        <th class="column-title">{{ trans('default.default_category') }}</th>
                         <th class="column-title">{{ trans('member.memberCategoryIndex_category_create_date') }} </th>
                         <th class="column-title no-link last">
                           <span class="nobr">
@@ -113,17 +119,23 @@
           							<td class=" ">{{ $user->created_at }}</td>
           							<td class="last">
 		                      <div class="btn-group  btn-group-sm">
+                          @can('member_item_edit')
 		                        <button class="btn btn-info" type="button">
                               <a href="{{ route('admin_member_item_edit',['id'=>$user->id]) }}">
                                 {{ trans('default.default_edit') }}
                               </a>
                             </button>
+                          @endcan
+                          @can('member_item_delete')
                             <button class="single_action btn @if($user->deleted_at == null) btn-info @else btn-danger @endif" type="button" data-action='delete'>
                               {{ trans('default.default_delete') }}
                             </button>
+                          @endcan
+                          @can('member_item_edit')
 		                        <button class="single_action btn @if($user->status == 1) btn-info @else btn-danger @endif" type="button" data-action="@if($user->status == 1) hide @else show @endif">
                               {{ trans('default.default_hide') }}
                             </button>
+                          @endcan
 		                      </div>							
           							</td>
           						</tr>
@@ -148,7 +160,7 @@
             var checked_str = getCheckedCategory();
             var action      = $(this).data('action');
             var url         = "{{ route('admin_member_ajax_category_related_item') }}";
-            $('#checked_categories').val(checked_str); // form
+            $('#checked_items').val(checked_str); // form
             $('#multiple_action').val(action);         // form
             var check_related_item = checkRelatedItem(checked_str,url);
             var sum_item = 0;     // 計算全部category一共被多少個item關聯
@@ -201,7 +213,7 @@
               clearCheckedItem();
               var action = $(this).data('action');
               var checked_str = $(this).closest('tr').data('category_id');
-              $('#checked_categories').val(checked_str);
+              $('#checked_items').val(checked_str);
               $('#multiple_action').val(action);
             swal({
               title: '{{ trans("default.default_confirm_edit") }}',

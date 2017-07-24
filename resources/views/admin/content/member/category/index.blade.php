@@ -56,15 +56,21 @@
                   <li><a class="collapse-link"><i class="fa fa-chevron-up"></i></a>
                   </li>
                   <li class="dropdown">
+                  @if(Auth::user()->can('member_category_create') || Auth::user()->can('member_category_delete'))                  
                     <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false"><i class="fa fa-wrench"></i></a>
                     <ul class="dropdown-menu" role="menu">
+                    @can('member_category_create')
                       <li>
                           <a href="{{ route('admin_member_category_create') }}">{{ trans('default.default_create') }}</a>
                       </li>
+                    @endcan
+                    @can('member_category_delete')
                       <li>
                           <a href="#" class="multiple_action" data-action='delete'>{{ trans('default.default_delete') }}</a>
-                      </li>                                           
+                      </li>
+                    @endcan                                           
                     </ul>
+                  @endif
                   </li>
                 </ul>
                 <div class="clearfix"></div>
@@ -102,14 +108,18 @@
           							<td class=" ">{{ $role->created_at }}</td>
           							<td class="last">
 		                      <div class="btn-group  btn-group-sm">
+                          @can('member_category_view')
 		                        <button class="btn btn-info" type="button">
                               <a href="{{ route('admin_member_category_edit',['id'=>$role->id]) }}">
                                 {{ trans('default.default_edit') }}
                               </a>
                             </button>
+                          @endcan
+                          @can('member_category_delete')
                             <button class="single_action btn @if($role->deleted_at == null) btn-info @else btn-danger @endif" type="button" data-action='delete'>
                               {{ trans('default.default_delete') }}
                             </button>
+                          @endcan
 		                      </div>							
           							</td>
           						</tr>

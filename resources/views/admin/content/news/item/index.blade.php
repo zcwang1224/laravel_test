@@ -56,22 +56,30 @@
                   <li><a class="collapse-link"><i class="fa fa-chevron-up"></i></a>
                   </li>
                   <li class="dropdown">
+                  @if(Auth::user()->can('news_item_create') || Auth::user()->can('news_item_edit') || Auth::user()->can('news_item_delete'))
                     <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false"><i class="fa fa-wrench"></i></a>
                     <ul class="dropdown-menu" role="menu">
+                    @if(Auth::user()->can('news_item_create'))
                       <li>
                           <a href="{{ route('admin_news_item_create') }}">{{ trans('default.default_create') }}</a>
                       </li>
+                    @endif
+                    @if(Auth::user()->can('news_item_delete'))
                       <li>
                           <a href="#" class="multiple_action" data-action='delete'>{{ trans('default.default_delete') }}</a>
                       </li>
+                    @endif
+                    @if(Auth::user()->can('news_item_edit'))
                       <li>
                           <a href="#" class="multiple_action" data-action='hide'>{{ trans('default.default_hide') }}</a>
                       </li>
                       <li>
                           <a href="#" class="multiple_action" data-action='show'>{{ trans('default.default_show') }}</a>
-                      </li>                                            
+                      </li>  
+                    @endif                                          
                     </ul>
                   </li>
+                @endif
                 </ul>
                 <div class="clearfix"></div>
               </div>
@@ -86,10 +94,6 @@
                         </th>
                         <th class="column-title">{{ trans('news.newsItemIndex_item_title')}} </th>
                         <th class="column-title">{{ trans('news.newsItemIndex_item_category')}} </th>
-                        <!-- <th class="column-title">Order </th>
-                        <th class="column-title">Bill to Name </th>
-                        <th class="column-title">Status </th>
-                        <th class="column-title">Amount </th> -->
                         <th class="column-title no-link last"><span class="nobr">{{ trans('news.newsItemIndex_item_action') }}</span>
                         </th>
                         <th class="bulk-actions" colspan="7">
@@ -114,17 +118,23 @@
           							<td class="last">
 		                      <div class="btn-group  btn-group-sm">
                               <input type="hidden" name="action" value="">
+                              @if(Auth::user()->can('news_item_view'))
                               <button class="btn btn-info" type="button">
                                 <a href="{{ route('admin_news_item_edit',['id'=>$newsItem->news_item_id]) }}">
                                   {{ trans('default.default_edit') }}
                                 </a>
-                              </button>                              
+                              </button>   
+                              @endif    
+                              @if(Auth::user()->can('news_item_delete'))                       
                               <button type="button" class="single_action btn @if($newsItem->deleted_at == null) btn-info @else btn-danger @endif" data-action="delete">
                                 {{ trans('default.default_delete') }}
                               </button>
+                              @endif
+                              @if(Auth::user()->can('news_item_edit'))  
                               <button type="button" class="single_action btn @if($newsItem->status == 1) btn-info @else btn-danger @endif" data-action="@if($newsItem->status == 1) hide @else show @endif">
                                 {{ trans('default.default_hide') }}
                               </button>
+                              @endif
 		                      </div>							
           							</td>
           						</tr>
