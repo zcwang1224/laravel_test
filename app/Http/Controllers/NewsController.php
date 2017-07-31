@@ -131,11 +131,12 @@ class NewsController extends Controller
                 /* -------- Create A New News Category Instance -------- */                
                 $updateData                    = $request->all();
                 $newsCategory                  = new NewsCategory;
-                $newsCategory->name            = $updateData['name'];
-                $newsCategory->seo_title       = $updateData['seo_title'];
-                $newsCategory->seo_description = $updateData['seo_description'];
-                $newsCategory->seo_keyword     = $updateData['seo_keyword'];
-                $newsCategory->content         = $updateData['content'];
+                $newsCategory->name            = $updateData['name'             ];
+                $newsCategory->image           = $updateData['image'            ];
+                $newsCategory->seo_title       = $updateData['seo_title'        ];
+                $newsCategory->seo_description = $updateData['seo_description'  ];
+                $newsCategory->seo_keyword     = $updateData['seo_keyword'      ];
+                $newsCategory->content         = $updateData['content'          ];
                 /* Status */
                 if(isset($updateData['status']) && $updateData['status']==1) 
                 {
@@ -144,20 +145,6 @@ class NewsController extends Controller
                 else
                 {
                     $newsCategory->status = 0;
-                }
-                /* Image Upload */
-                if($request->file('image'))
-                {   
-                    //刪除舊有檔案
-                    if(Storage::exists($newsCategory->image))
-                    {
-                        Storage::delete($newsCategory->image);
-                    }
-                    //存入檔案與資料庫
-                    $dateTime  = date('YmdHis');
-                    $file_name = $dateTime.'_'.$request->file('image')->getClientOriginalName();
-                    $request->file('image')->storeAs('upload/news/category/', $file_name);
-                    $newsCategory->image = '/upload/news/category/'.$file_name;
                 }
 
                 $newsCategory->save();   
@@ -197,7 +184,8 @@ class NewsController extends Controller
                 ]);  
                 /* -------- Basic Data --------  */
                 $updateData                    = $request->all(); 
-                $newsCategory->name            = $updateData['name'];
+                $newsCategory->name            = $updateData['name'     ];
+                $newsCategory->image           = $updateData['image'    ];
                 if(isset($updateData['status']) && $updateData['status']==1) 
                 {
                     $newsCategory->status = 1;
@@ -210,21 +198,6 @@ class NewsController extends Controller
                 $newsCategory->seo_description = $updateData['seo_description'];
                 $newsCategory->seo_keyword     = $updateData['seo_keyword'];
                 $newsCategory->content         = $updateData['content'];
-
-                /* -------- Image Upload --------  */
-                if($request->file('image'))
-                {   
-                    //刪除舊有檔案
-                    if(Storage::exists($newsCategory->image))
-                    {
-                        Storage::delete($newsCategory->image);
-                    }
-                    //存入檔案與資料庫
-                    $dateTime  = date('YmdHis');
-                    $file_name = $dateTime.'_'.$request->file('image')->getClientOriginalName();
-                    $request->file('image')->storeAs('upload/news/category/', $file_name);
-                    $newsCategory->image = '/upload/news/category/'.$file_name;
-                }
 
                 $newsCategory->save();   
                 
@@ -418,12 +391,13 @@ class NewsController extends Controller
                 /* -------- Create A New News Item Instance -------- */                 
                 $updateData                 = $request->all();
                 $newsItem                   = new NewsItem;
-                $newsItem->news_category_id = $updateData['news_category'];
-                $newsItem->name             = $updateData['name'];
-                $newsItem->seo_title        = $updateData['seo_title'];
-                $newsItem->seo_description  = $updateData['seo_description'];
-                $newsItem->seo_keyword      = $updateData['seo_keyword'];
-                $newsItem->content          = $updateData['content'];
+                $newsItem->news_category_id = $updateData['news_category'   ];
+                $newsItem->name             = $updateData['name'            ];
+                $newsItem->image            = $updateData['image'           ];
+                $newsItem->seo_title        = $updateData['seo_title'       ];
+                $newsItem->seo_description  = $updateData['seo_description' ];
+                $newsItem->seo_keyword      = $updateData['seo_keyword'     ];
+                $newsItem->content          = $updateData['content'         ];
                 /* Status */
                 if(isset($updateData['status']) && $updateData['status']==1) 
                 {
@@ -433,21 +407,6 @@ class NewsController extends Controller
                 {
                     $newsItem->status = 0;
                 }
-                /* Image Upload */
-                if($request->file('image'))
-                {   
-                    //刪除舊有檔案
-                    if(Storage::exists($newsItem->image))
-                    {
-                        Storage::delete($newsItem->image);
-                    }
-                    //存入檔案與資料庫
-                    $dateTime  = date('YmdHis');
-                    $file_name = $dateTime.'_'.$request->file('image')->getClientOriginalName();
-                    $request->file('image')->storeAs('upload/news/item/', $file_name);
-                    $newsItem->image = '/upload/news/item/'.$file_name;
-                }
-
                 $newsItem->save();   
                 
                 return redirect()->action('NewsController@item');             
@@ -488,8 +447,9 @@ class NewsController extends Controller
 
                 /* -------- Edit Form Data -------- */             
                 $updateData                 = $request->all(); 
-                $newsItem->name             = $updateData['name'];
-                $newsItem->news_category_id = $updateData['news_category'];
+                $newsItem->name             = $updateData['name'            ];
+                $newsItem->image            = $updateData['image'           ];
+                $newsItem->news_category_id = $updateData['news_category'   ];
                 if(isset($updateData['status']) && $updateData['status']==1) 
                 {
                     $newsItem->status = 1;
@@ -498,25 +458,10 @@ class NewsController extends Controller
                 {
                     $newsItem->status = 0;
                 }
-                $newsItem->seo_title       = $updateData['seo_title'];
-                $newsItem->seo_description = $updateData['seo_description'];
-                $newsItem->seo_keyword     = $updateData['seo_keyword'];
-                $newsItem->content         = $updateData['content'];
-
-                /* Image Upload */
-                if($request->file('image'))
-                {   
-                    //刪除舊有檔案
-                    if(Storage::exists($newsItem->image))
-                    {
-                        Storage::delete($newsItem->image);
-                    }
-                    //存入檔案與資料庫
-                    $dateTime  = date('YmdHis');
-                    $file_name = $dateTime.'_'.$request->file('image')->getClientOriginalName();
-                    $request->file('image')->storeAs('upload/news/item/', $file_name);
-                    $newsItem->image = '/upload/news/item/'.$file_name;
-                }
+                $newsItem->seo_title       = $updateData['seo_title'        ];
+                $newsItem->seo_description = $updateData['seo_description'  ];
+                $newsItem->seo_keyword     = $updateData['seo_keyword'      ];
+                $newsItem->content         = $updateData['content'          ];
 
                 $newsItem->save();                
                 return redirect()->action('NewsController@item');             

@@ -150,6 +150,7 @@ class ProductController extends Controller
                 $updateData                       = $request->all();               
                 $productCategory                  = new ProductCategory;
                 $productCategory->name            = $updateData['name'];
+                $productCategory->image           = $updateData['image'   ];
                 $productCategory->parent          = $updateData['parent'];
                 $productCategory->seo_title       = $updateData['seo_title'];
                 $productCategory->seo_description = $updateData['seo_description'];
@@ -163,20 +164,6 @@ class ProductController extends Controller
                 else
                 {
                     $productCategory->status = 0;
-                }
-                /* Image Upload */
-                if($request->file('image'))
-                {   
-                    //刪除舊有檔案
-                    if(Storage::exists($productCategory->image))
-                    {
-                        Storage::delete($productCategory->image);
-                    }
-                    //存入檔案與資料庫
-                    $dateTime  = date('YmdHis');
-                    $file_name = $dateTime.'_'.$request->file('image')->getClientOriginalName();
-                    $request->file('image')->storeAs('upload/product/category/', $file_name);
-                    $productCategory->image = '/upload/product/category/'.$file_name;
                 }
 
                 $productCategory->save();   
@@ -223,9 +210,10 @@ class ProductController extends Controller
                     'seo_keyword'     => 'required|max:100',
                 ]);  
                 /* -------- Basic Data --------  */
-                $updateData                    = $request->all(); 
-                $productCategory->parent            = $updateData['parent'];
-                $productCategory->name            = $updateData['name'];
+                $updateData              = $request->all(); 
+                $productCategory->parent = $updateData['parent' ];
+                $productCategory->name   = $updateData['name'   ];
+                $productCategory->image  = $updateData['image'  ];
                 if(isset($updateData['status']) && $updateData['status']==1) 
                 {
                     $productCategory->status = 1;
@@ -238,21 +226,6 @@ class ProductController extends Controller
                 $productCategory->seo_description = $updateData['seo_description'];
                 $productCategory->seo_keyword     = $updateData['seo_keyword'];
                 $productCategory->content         = $updateData['content'];
-
-                /* -------- Image Upload --------  */
-                if($request->file('image'))
-                {   
-                    //刪除舊有檔案
-                    if(Storage::exists($productCategory->image))
-                    {
-                        Storage::delete($productCategory->image);
-                    }
-                    //存入檔案與資料庫
-                    $dateTime  = date('YmdHis');
-                    $file_name = $dateTime.'_'.$request->file('image')->getClientOriginalName();
-                    $request->file('image')->storeAs('upload/product/category/', $file_name);
-                    $productCategory->image = '/upload/product/category/'.$file_name;
-                }
 
                 $productCategory->save();   
                 
@@ -442,20 +415,6 @@ class ProductController extends Controller
                 {
                     $productItem->status = 0;
                 }
-                /* Image Upload */
-                // if($request->file('image'))
-                // {   
-                //     //刪除舊有檔案
-                //     if(Storage::exists($productItem->image))
-                //     {
-                //         Storage::delete($productItem->image);
-                //     }
-                //     //存入檔案與資料庫
-                //     $dateTime  = date('YmdHis');
-                //     $file_name = $dateTime.'_'.$request->file('image')->getClientOriginalName();
-                //     $request->file('image')->storeAs('upload/product/item/', $file_name);
-                //     $productItem->image = '/upload/product/item/'.$file_name;
-                // }
 
                 // 相關產品
                 $productItem->itemHasRelated()->detach();

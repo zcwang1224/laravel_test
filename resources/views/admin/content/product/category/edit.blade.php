@@ -9,8 +9,8 @@
     <link rel="stylesheet" href="{{ asset('colorbox-master/colorbox.css') }}" />  <!-- ColorBox -->
     <!-- JS -->
     <script src="{{ asset('ckeditor/ckeditor.js') }}"></script>  <!-- CKEditor -->
-    <script src="{{ asset('vendors/dropzone/dist/min/dropzone.min.js') }}"></script>  <!-- DropZone -->
     <script src="{{ asset('colorbox-master/jquery.colorbox.js') }}"></script>   <!-- ColorBox -->
+    <script src="{{ asset('/vendor/laravel-filemanager/js/lfm.js') }}"></script>
     @include('admin.partials.top')
 @stop
 
@@ -90,23 +90,23 @@
                         </div>
                       </div> 
                       <br /> 
-                  {{-- Image Upload 圖片上傳 --}}     
+                  {{-- Image Upload 圖片上傳 --}} 
                       <div class="form-group">
-                        <label class="control-label col-md-3 col-sm-3 col-xs-12" for="first-name"> {{ trans('product.productCategory_category_image') }}
-                         <!-- <span class="required">*</span> -->
+                        <label class="control-label col-md-3 col-sm-3 col-xs-12" for="first-name"> {{ trans('product.productItem_item_upload_image') }}
                         </label>
                         <div class="col-md-6 col-sm-6 col-xs-12">
-                          <input type="file" name="image" id="fileUpload" class="form-control col-md-7 col-xs-12">
-                          <div id="image-holder">
-                          @if($productCategory->image != null && $productCategory != '')
-                            <img width="100px" height="100px" src="{{ asset('storage'.$productCategory->image) }}">
-                          @else
-                            <img width="100px" height="100px" src="{{ asset('storage'.$productCategory->image) }}">
-                          @endif
-                         </div>
+                           <div class="input-group">
+                             <span class="input-group-btn">
+                               <a id="image" data-input="thumbnail" data-preview="holder" class="btn btn-primary">
+                                 <i class="fa fa-picture-o"></i> {{ trans('default.default_choose') }}
+                               </a>
+                             </span>
+                             <input id="thumbnail" class="form-control" type="text" name="image" value="{{ $productCategory->image }}" readonly>
+                           </div>
+                           <img id="holder" style="margin-top:15px;max-height:100px;" src="{{ $productCategory->image }}">
                         </div>
-                      </div> 
-                      <br />      
+                      </div>       
+                      <br /> 
                   {{-- Status 分類狀態 --}}                                          
                       <div class="form-group">
                         <label class="control-label col-md-3 col-sm-3 col-xs-12" for="first-name">{{ trans('product.productCategory_category_status') }}
@@ -229,7 +229,7 @@
         </div>      
     <script>
       $(document).ready(function(){
-
+          $('#image').filemanager('image');
           /* -------- SweetAlert 2 - Submit Confirm ----------*/
               $('#submit_btn').on('click',function(){
 
