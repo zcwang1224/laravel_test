@@ -1,0 +1,25 @@
+body{
+}
+/* default css */
+@media (max-width: 768px) {
+body{
+	background-color: red;
+}
+}
+@media (min-width: 768px) and (max-width: 992px) {
+body{
+	background-color: green;
+}
+}
+@media (min-width: 992px) { 
+    #header{
+    	height: 80px;
+    	background: #286090;
+    }
+    #logo{
+    	height:100%;
+    	background: url('../../images/home/logo.png');
+    	background-size: contain;
+    	background-repeat: no-repeat;
+    }
+}

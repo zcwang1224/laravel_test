@@ -11,9 +11,7 @@
 |
 */
 
-Route::get('/', function () {
-    return view('welcome');
-});
+
 // Auth::routes();
 // Authentication Routes...
 Route::get('login', 'Auth\LoginController@showLoginForm')->name('login');
@@ -332,3 +330,10 @@ Route::group(['before' => 'auth'], function () {
     Route::post('/laravel-filemanager/upload/{type}', '\Unisharp\Laravelfilemanager\controllers\LfmController@upload')->name('filemanager_upload');
     // list all lfm routes here...
 });
+
+/*-------------------------------------------------------------------------------
+ |                                  Web Front Side
+ *______________________________________________________________________________*/
+
+
+Route::get('/{act?}', ['uses' => 'FrontController@index']);
