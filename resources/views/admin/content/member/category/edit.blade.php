@@ -97,11 +97,12 @@
                     </div>
                     <div class="x_content">
                       <br />
-                  {{-- 最新消息權限 --}}
+                  {{-- 權限 --}}
                       <div class="form-group">
 
                         @foreach(config('permission.permissions') as $model_key => $model_value)
-                          <label class="control-label col-md-3 col-sm-3 col-xs-12" for="first-name">{{ $model_value['display_name'] }}
+                          <label class="control-label col-md-3 col-sm-3 col-xs-12" for="first-name">
+                            {{ $model_value['display_name'] }}
                           </label>
                           <br>
                           <div style="padding: 5px;position: relative;margin-left: 25%;margin-right: 25%">  
@@ -113,7 +114,7 @@
                               </td>
                               <td width="70%">
                                 <label>
-                                  <input type="checkbox" class="flat " />全選
+                                  <input type="checkbox" class="flat " />{{ trans('default.default_select_all') }}
                                 </label>
                               </td>
                             </tr>
@@ -122,7 +123,7 @@
                               <td>
                                 <ul class="nav">
                                 @foreach($group_value['value'] as $permission_key => $permission_value)
-                                  <li>
+                                  <li style="float:left; padding: 5px;">
                                     <label>
                                       <input type="checkbox" name="permission[]" value="{{ $permission_value['name'] }}" @if(in_array($permission_value['name'],$role_has_permission)) checked @endif required class="flat " /> {{ $permission_value['display_name'] }}
                                     </label>
@@ -142,6 +143,7 @@
                 </div>
               </div>              
               {{-- ------------------ 送出按鈕 ------------------ --}}
+              @can('member_category_edit')
               <div class="row">
                 <div class="col-md-12 col-sm-12 col-xs-12">
                   <div class="x_panel">
@@ -161,6 +163,7 @@
                   </div>
                 </div>
               </div> 
+              @endcan
             </form>           
           </div>
         </div>      

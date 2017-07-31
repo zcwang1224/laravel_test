@@ -4,13 +4,8 @@
 {{-- --------------- 最上方top -------------- --}}
 @section('top')
     @parent
-    <!-- CSS -->
-    <link href="{{ asset('vendors/dropzone/dist/min/dropzone.min.css') }}" rel="stylesheet">  <!-- DropZone -->
-    <link rel="stylesheet" href="{{ asset('colorbox-master/colorbox.css') }}" />  <!-- ColorBox -->
     <!-- JS -->
     <script src="{{ asset('ckeditor/ckeditor.js') }}"></script>  <!-- CKEditor -->
-    <script src="{{ asset('vendors/dropzone/dist/min/dropzone.min.js') }}"></script>  <!-- DropZone -->
-    <script src="{{ asset('colorbox-master/jquery.colorbox.js') }}"></script>   <!-- ColorBox -->
     @include('admin.partials.top')
 @stop
 
@@ -36,7 +31,7 @@
                 <h3>{{ trans('news.newsIndex_title') }}</h3>
               </div>
             </div>            
-            <form method="POST" action="{{ route('admin_news_index_edit') }}" id="main_form" data-parsley-validate class="form-horizontal form-label-left">
+            <form method="POST" action="{{ route('admin_system_index_edit') }}" id="main_form" data-parsley-validate class="form-horizontal form-label-left">
               {{ csrf_field() }}            
               <div class="clearfix"></div>
           {{-- --------- Validation Error 表單驗證錯誤訊息------------ --}}
@@ -48,14 +43,59 @@
                           @endforeach
                       </ul>
                   </div>
-              @endif                
+              @endif     
+          {{-- ------------------ 基本 設定------------------ --}}            
+              <div class="row">
+                <div class="col-md-12 col-sm-12 col-xs-12">
+                  <div class="x_panel">
+                    <div class="x_title">
+                      <h2>{{ trans('default.default_basic_setting') }}
+                      </h2>
+                      <ul class="nav navbar-right panel_toolbox">
+                        <li><a class="collapse-link"><i class="fa fa-chevron-up"></i></a>
+                        </li>
+                      </ul>
+                      <div class="clearfix"></div>
+                    </div>
+                    <div class="x_content">                     
+                      <br />   
+                  {{-- Name 系統名稱 --}}                      
+                      <div class="form-group">
+                        <label class="control-label col-md-3 col-sm-3 col-xs-12" for="first-name">
+                          {{ trans('system.system_name_title') }}
+                        </label>
+                        <div class="col-md-6 col-sm-6 col-xs-12">
+                          <input type="text" name="name" value="{{ $newsItem->name }}" class="form-control col-md-7 col-xs-12">
+                        </div>
+                      </div>
+                      <br />
+                  {{-- Image Upload 圖片上傳 --}}   
+                      <div class="form-group">
+                        <label class="control-label col-md-3 col-sm-3 col-xs-12" for="first-name"> 
+                          {{ trans('news.newsItemCreate_basic_image') }}
+                        </label>
+                        <div class="col-md-6 col-sm-6 col-xs-12">
+                          <input type="file" name="image" id="fileUpload" class="form-control col-md-7 col-xs-12">
+                          <div id="image-holder">
+                          @if($newsItem->image != null && $newsItem != '')
+                            <img width="100px" height="100px" src="{{ asset('storage'.$newsItem->image) }}">
+                          @else
+                            <img width="100px" height="100px" src="{{ asset('storage'.$newsItem->image) }}">
+                          @endif
+                         </div>
+                        </div>
+                      </div>  
+                    </div>               
+                  </div>
+                </div>
+              </div>
           {{-- ------------------ SEO 設定------------------ --}}             
               <div class="row">
                 <div class="col-md-12 col-sm-12 col-xs-12">
                   <div class="x_panel">
                     <div class="x_title">
-                      <h2>{{ trans('news.newsIndexSeo_title') }} 
-                          {{-- <small>different form elements</small> --}}
+                      <h2>
+                        {{ trans('news.newsIndexSeo_title') }} 
                       </h2>
                       <ul class="nav navbar-right panel_toolbox">
                         <li><a class="collapse-link"><i class="fa fa-chevron-up"></i></a>
@@ -67,8 +107,8 @@
                       <br />
                   {{-- SEO Title 標題 --}}
                       <div class="form-group">
-                        <label class="control-label col-md-3 col-sm-3 col-xs-12" for="first-name">{{ trans('news.newsIndexSeo_seo_title') }}
-                         <!-- <span class="required">*</span> -->
+                        <label class="control-label col-md-3 col-sm-3 col-xs-12" for="first-name">
+                          {{ trans('news.newsIndexSeo_seo_title') }}
                         </label>
                         <div class="col-md-6 col-sm-6 col-xs-12">
                           <input type="text" name="seo_title" value="{{ $news->seo_title or '' }}" class="form-control col-md-7 col-xs-12">
@@ -76,8 +116,8 @@
                       </div>
                   {{-- SEO Description 敘述 --}}    
                       <div class="form-group">
-                        <label class="control-label col-md-3 col-sm-3 col-xs-12" for="last-name">{{ trans('news.newsIndexSeo_seo_description') }}
-                        <!-- <span class="required">*</span> -->
+                        <label class="control-label col-md-3 col-sm-3 col-xs-12" for="last-name">
+                          {{ trans('news.newsIndexSeo_seo_description') }}
                         </label>
                         <div class="col-md-6 col-sm-6 col-xs-12">
                           <input type="text" name="seo_description" value="{{ $news->seo_description or ''  }}" class="form-control col-md-7 col-xs-12">
@@ -85,8 +125,8 @@
                       </div>
                   {{-- SEO Keyword 關鍵字 --}}
                       <div class="form-group">
-                        <label class="control-label col-md-3 col-sm-3 col-xs-12" for="last-name">{{ trans('news.newsIndexSeo_seo_keyword') }}
-                        <!-- <span class="required">*</span> -->
+                        <label class="control-label col-md-3 col-sm-3 col-xs-12" for="last-name">
+                          {{ trans('news.newsIndexSeo_seo_keyword') }}
                         </label>
                         <div class="col-md-6 col-sm-6 col-xs-12">
                           <input type="text" name="seo_keyword" value="{{ $news->seo_keyword or ''  }}" class="form-control col-md-7 col-xs-12">
@@ -101,12 +141,11 @@
                 <div class="col-md-12 col-sm-12 col-xs-12">
                   <div class="x_panel">
                     <div class="x_title">
-                      <h2>{{ trans('news.newsIndexContent_title') }} 
-                          {{-- <small>different form elements</small> --}}
+                      <h2>
+                        {{ trans('news.newsIndexContent_title') }} 
                       </h2>
                       <ul class="nav navbar-right panel_toolbox">
-                        <li><a class="collapse-link"><i class="fa fa-chevron-up"></i></a>
-                        </li>
+                        <li><a class="collapse-link"><i class="fa fa-chevron-up"></i></a></li>
                       </ul>
                       <div class="clearfix"></div>
                     </div>
@@ -130,9 +169,8 @@
                   </div>
                 </div>
               </div>
-
               {{-- ------------------ 送出按鈕 ------------------ --}}
-              @if(Auth::user()->can('news_index_edit'))
+              <!-- @if(Auth::user()->can('news_index_edit')) -->
               <div class="row">
                 <div class="col-md-12 col-sm-12 col-xs-12">
                   <div class="x_panel">
@@ -149,20 +187,11 @@
                   </div>
                 </div>
               </div> 
-              @endif
+              <!-- @endif -->
             </form>                   
           </div>
         </div>
     <script>
-      $(document).ready(function(){
-        //Examples of how to assign the Colorbox event to elements
-        // $(".color_box_test").colorbox({iframe:true, width:"80%", height:"80%",href:"{{ route('admin_index') }}"});
-        var $iframe = $('.color_box_test');
-        // $(".color_box_test").colorbox({iframe:false, width:"80%", height:"80%",href: $iframe.attr('href')+' #main'});
-         $(".color_box_test").colorbox({ inline:true,width:"80%", height:"80%",href: $(".color_box_test").attr('href') + " #main"});
-
-
-      });
 
       function confirm_submit()
       {

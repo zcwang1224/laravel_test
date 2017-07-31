@@ -56,20 +56,26 @@
                 <ul class="nav navbar-right panel_toolbox">
                   <li><a class="collapse-link"><i class="fa fa-chevron-up"></i></a></li>
                   <li class="dropdown">
+                    @if(Auth::user()->can('product_category_create') || Auth::user()->can('product_category_edit') || Auth::user()->can('product_category_delete'))                  
                     <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
                       <i class="fa fa-wrench"></i>
                     </a>
                     <ul class="dropdown-menu" role="menu">
+                    @if(Auth::user()->can('product_category_create'))                       
                       <li>
                           <a href="{{ route('admin_product_category_create') }}">
                             {{ trans('default.default_create') }}
                           </a>
                       </li>
+                    @endif
+                    @if(Auth::user()->can('product_category_delete'))  
                       <li>
                           <a href="#" class="multiple_action" data-action='delete'>
                             {{ trans('default.default_delete') }}
                           </a>
                       </li>
+                    @endif
+                    @if(Auth::user()->can('product_category_edit')) 
                       <li>
                           <a href="#" class="multiple_action" data-action='hide'>
                             {{ trans('default.default_hide') }}
@@ -79,8 +85,10 @@
                           <a href="#" class="multiple_action" data-action='show'>
                             {{ trans('default.default_show') }}
                           </a>
-                      </li>                                            
+                      </li> 
+                    @endif                                           
                     </ul>
+                    @endif
                   </li>
                 </ul>
                 <div class="clearfix"></div>
@@ -158,17 +166,23 @@
                     {{-- 功能 --}}
                         <td class="last">
                           <div class="btn-group  btn-group-sm">
+                          @if(Auth::user()->can('product_category_view'))   
                             <button class="btn btn-info" type="button">
                               <a href="{{ route('admin_product_category_edit',['id'=>$productCategory->product_category_id]) }}">
                                 {{ trans('default.default_edit') }}
                               </a>
                             </button>
+                          @endif
+                          @if(Auth::user()->can('product_category_delete')) 
                             <button class="single_action btn @if($productCategory->deleted_at == null) btn-info @else btn-danger @endif" type="button" data-action='delete'>
                               {{ trans('default.default_delete') }}
                             </button>
+                          @endif
+                          @if(Auth::user()->can('product_category_edit')) 
                             <button class="single_action btn @if($productCategory->status == 1) btn-info @else btn-danger @endif" type="button" data-action="@if($productCategory->status == 1) hide @else show @endif">
                               {{ trans('default.default_hide') }}
                             </button>
+                          @endif
                           </div>              
                         </td>
                       </tr>

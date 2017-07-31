@@ -76,8 +76,9 @@
                       </div>
                       <br />
                   {{-- 分類設定 --}}
+                    @can('member_item_edit_category')
                       <div class="form-group">
-                          <label class="control-label col-md-3 col-sm-3 col-xs-12" for="first-name">分類
+                          <label class="control-label col-md-3 col-sm-3 col-xs-12" for="first-name">{{ trans('default.default_category') }}
                           </label>
                           <br>
                           <div style="padding: 5px;position: relative;margin-left: 25%;margin-right: 25%">  
@@ -91,7 +92,8 @@
                                 @endforeach
                                 </ul>
                           </div>
-                      </div>                        
+                      </div>  
+                    @endcan                      
                   {{-- email 信箱 --}}                      
                       <div class="form-group">
                         <label class="control-label col-md-3 col-sm-3 col-xs-12" for="first-name">{{ trans('member.memberItem_item_email') }}
@@ -147,6 +149,7 @@
                 </div>
               </div>
               {{-- ------------------ 送出按鈕 ------------------ --}}
+              @can('member_item_edit')
               <div class="row">
                 <div class="col-md-12 col-sm-12 col-xs-12">
                   <div class="x_panel">
@@ -165,7 +168,8 @@
                     </div>
                   </div>
                 </div>
-              </div> 
+              </div>
+              @endcan 
             </form> 
           </div>
         </div>      

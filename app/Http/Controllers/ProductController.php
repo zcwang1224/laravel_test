@@ -861,28 +861,7 @@ class ProductController extends Controller
         return $item;
     } 
 
-    /**
-     * 檔案上傳
-     * @param 
-     * @return 
-     */
-    function itemMultipleFileUploadAction(Request $request)
-    {
-        Log::info($request->all());
-        if($request->file('image'))
-        {   
-            //刪除舊有檔案
-            if(Storage::exists($productItem->image))
-            {
-                Storage::delete($productItem->image);
-            }
-            //存入檔案與資料庫
-            $dateTime  = date('YmdHis');
-            $file_name = $dateTime.'_'.$request->file('image')->getClientOriginalName();
-            $request->file('image')->storeAs('upload/product/item/', $file_name);
-            $productItem->image = '/upload/product/item/'.$file_name;
-        }        
-    }
+
 
     /**
      * Item Index Multiple action

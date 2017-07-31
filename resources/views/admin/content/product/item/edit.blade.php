@@ -506,6 +506,7 @@
                 </div>
               </div>              
               {{-- ------------------ 送出按鈕 ------------------ --}}
+              @can(config('permission.permissions.product.value.product_item.value.product_item_edit.name'))
               <div class="row">
                 <div class="col-md-12 col-sm-12 col-xs-12">
                   <div class="x_panel">
@@ -518,7 +519,8 @@
                     </div>
                   </div>
                 </div>
-              </div> 
+              </div>
+              @endcan
             </form> 
 
           </div>

@@ -32,6 +32,7 @@ class Handler extends ExceptionHandler
      */
     public function report(Exception $exception)
     {
+      
         parent::report($exception);
     }
 
@@ -44,6 +45,9 @@ class Handler extends ExceptionHandler
      */
     public function render($request, Exception $exception)
     {
+        if ($exception instanceof \Illuminate\Auth\Access\AuthorizationException) {
+            return response()->view('error.403',['exception' => $exception]);
+        }          
         return parent::render($request, $exception);
     }
 
