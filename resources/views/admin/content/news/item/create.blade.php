@@ -80,10 +80,9 @@
                   {{-- Name 標題 --}}
                       <div class="form-group">
                         <label class="control-label col-md-3 col-sm-3 col-xs-12" for="first-name">{{ trans('news.newsItemCreate_basic_title') }}
-                         <!-- <span class="required">*</span> -->
                         </label>
                         <div class="col-md-6 col-sm-6 col-xs-12">
-                          <input type="text" name="name" value="" class="form-control col-md-7 col-xs-12">
+                          <input type="text" name="name" value="{{ old('name') }}" class="form-control col-md-7 col-xs-12">
                         </div>
                       </div> 
                       <br /> 
@@ -98,9 +97,9 @@
                                  <i class="fa fa-picture-o"></i> {{ trans('default.default_choose') }}
                                </a>
                              </span>
-                             <input id="thumbnail" class="form-control" type="text" name="image" readonly>
+                             <input type="text" name="image" value="{{ old('image') }}" id="thumbnail" class="form-control" readonly>
                            </div>
-                           <img id="holder" style="margin-top:15px;max-height:100px;">
+                           <img src="{{ old('image') }}" id="holder" style="margin-top:15px;max-height:100px;">
                         </div>
                       </div>
                       <br /> 
@@ -108,11 +107,10 @@
                       <br />                                            
                       <div class="form-group">
                         <label class="control-label col-md-3 col-sm-3 col-xs-12" for="first-name">{{ trans('news.newsItemCreate_basic_status') }}
-                         <!-- <span class="required">*</span> -->
                         </label>
                         <div class="col-md-6 col-sm-6 col-xs-12">
                           <label>
-                            <input type="checkbox" name="status" class="js-switch" value="1"/> {{ trans('default.default_checked') }}
+                            <input type="checkbox" name="status" class="js-switch" value="1" @if(old('status') == 1) checked  @endif/> {{ trans('default.default_checked') }}
                           </label>
                         </div> 
                       </div>                                             
@@ -137,7 +135,7 @@
                     <div class="x_content">
                       <br />
                     {{-- CKEditor with Responsive FileSystem --}}
-                      <textarea id="content" name="content" class="form-control">{{ $newsItem->content or '' }}</textarea>
+                      <textarea id="content" name="content" class="form-control">{{ old('content') }}</textarea>
                       <script src="//cdn.ckeditor.com/4.6.2/standard/ckeditor.js"></script>
                       <script>
                         var options = {
@@ -160,7 +158,6 @@
                   <div class="x_panel">
                     <div class="x_title">
                       <h2>{{ trans('news.newsItemCreate_seo_seo_title') }}
-                      {{-- <small>different form elements</small> --}}
                       </h2>
                       <ul class="nav navbar-right panel_toolbox">
                         <li><a class="collapse-link"><i class="fa fa-chevron-up"></i></a>
@@ -172,10 +169,9 @@
                       <br />
                       <div class="form-group">
                         <label class="control-label col-md-3 col-sm-3 col-xs-12" for="first-name">{{ trans('news.newsItemCreate_seo_title') }}
-                         <!-- <span class="required">*</span> -->
                         </label>
                         <div class="col-md-6 col-sm-6 col-xs-12">
-                          <input type="text" name="seo_title" value="" class="form-control col-md-7 col-xs-12">
+                          <input type="text" name="seo_title" value="{{ old('seo_title') }}" class="form-control col-md-7 col-xs-12">
                         </div>
                       </div>
                       <div class="form-group">
@@ -183,7 +179,7 @@
                         <!-- <span class="required">*</span> -->
                         </label>
                         <div class="col-md-6 col-sm-6 col-xs-12">
-                          <input type="text" name="seo_description" value="" class="form-control col-md-7 col-xs-12">
+                          <input type="text" name="seo_description" value="{{ old('seo_description') }}" class="form-control col-md-7 col-xs-12">
                         </div>
                       </div>
                       <div class="form-group">
@@ -191,7 +187,7 @@
                         <!-- <span class="required">*</span> -->
                         </label>
                         <div class="col-md-6 col-sm-6 col-xs-12">
-                          <input type="text" name="seo_keyword" value="" class="form-control col-md-7 col-xs-12">
+                          <input type="text" name="seo_keyword" value="{{ old('seo_keyword') }}" class="form-control col-md-7 col-xs-12">
                         </div>
                       </div>  
                     </div>
@@ -223,7 +219,9 @@
         </div>
         <script>
           $(document).ready(function(){
-            $('#image').filemanager('image');
+          /* -------- Filemanager Initialize ----------*/
+            $('#image').filemanager('image',{prefix:"{{ config('lfm.prefix') }}"});
+            $('#file').filemanager('file',{prefix:"{{ config('lfm.prefix') }}"});
           /* -------- SweetAlert 2 - Submit Confirm ----------*/
               $('#submit_btn').on('click',function(){
 

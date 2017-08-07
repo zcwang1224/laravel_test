@@ -33,7 +33,9 @@
     <link href="{{ asset('build/css/custom.min.css') }}" rel="stylesheet">
     <!-- SweetAlert 2 Style -->
     <link rel="stylesheet" href="{{ asset('sweetalert2-master/dist/sweetalert2.min.css') }}">  
-
+    <!-- ColorBox -->
+    <link rel="stylesheet" href="{{ asset('colorbox-master/colorbox.css') }}" />
+    <script src="{{ asset('colorbox-master/jquery.colorbox-min.js') }}"></script>   
     <!-- PNotify -->
 <!--     <link href="{{ asset('vendors/pnotify/dist/pnotify.css') }}" rel="stylesheet">
     <link href="{{ asset('vendors/pnotify/dist/pnotify.buttons.css') }}" rel="stylesheet">
@@ -103,7 +105,7 @@
     <script src="{{ asset('jquery-template-master/dist/jquery.loadTemplate.min.js') }}"></script>    
     <!-- jQuery Tags Input -->
     <script src="{{ asset('vendors/jquery.tagsinput/src/jquery.tagsinput.js') }}"></script>
-       
+    
     <!-- PNotify -->
 <!--     <script src="{{ asset('vendors/pnotify/dist/pnotify.js') }}"></script>
     <script src="{{ asset('vendors/pnotify/dist/pnotify.buttons.js') }}"></script>

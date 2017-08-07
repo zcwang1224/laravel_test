@@ -6,6 +6,7 @@
     @parent
     <!-- JS -->
     <script src="{{ asset('ckeditor/ckeditor.js') }}"></script>  <!-- CKEditor -->
+    <script src="{{ asset('/vendor/laravel-filemanager/js/lfm.js') }}"></script>    
     @include('admin.partials.top')
 @stop
 
@@ -28,7 +29,7 @@
           <div class="">          
             <div class="page-title">
               <div class="title_left">
-                <h3>{{ trans('news.newsIndex_title') }}</h3>
+                <h3>{{ trans_choice('system.system_title', 1, ['type1' => trans('default.default_basic_setting')]) }}</h3>
               </div>
             </div>            
             <form method="POST" action="{{ route('admin_system_index_edit') }}" id="main_form" data-parsley-validate class="form-horizontal form-label-left">
@@ -65,74 +66,28 @@
                           {{ trans('system.system_name_title') }}
                         </label>
                         <div class="col-md-6 col-sm-6 col-xs-12">
-                          <input type="text" name="name" value="{{ $newsItem->name }}" class="form-control col-md-7 col-xs-12">
+                          <input type="text" name="name" value="{{ $system->name }}" class="form-control col-md-7 col-xs-12">
                         </div>
                       </div>
                       <br />
-                  {{-- Image Upload 圖片上傳 --}}   
+                  {{-- Image Upload LOGO --}}   
                       <div class="form-group">
-                        <label class="control-label col-md-3 col-sm-3 col-xs-12" for="first-name"> 
-                          {{ trans('news.newsItemCreate_basic_image') }}
+                        <label class="control-label col-md-3 col-sm-3 col-xs-12" for="first-name"> {{ trans('system.system_logo') }}
                         </label>
                         <div class="col-md-6 col-sm-6 col-xs-12">
-                          <input type="file" name="image" id="fileUpload" class="form-control col-md-7 col-xs-12">
-                          <div id="image-holder">
-                          @if($newsItem->image != null && $newsItem != '')
-                            <img width="100px" height="100px" src="{{ asset('storage'.$newsItem->image) }}">
-                          @else
-                            <img width="100px" height="100px" src="{{ asset('storage'.$newsItem->image) }}">
-                          @endif
-                         </div>
+                           <div class="input-group">
+                             <span class="input-group-btn">
+                               <a id="image" data-input="thumbnail" data-preview="holder" class="btn btn-primary">
+                                 <i class="fa fa-picture-o"></i> {{ trans('default.default_choose') }}
+                               </a>
+                             </span>
+                             <input id="thumbnail" class="form-control" type="text" name="image" value="{{ $system->image }}" readonly>
+                           </div>
+                           <img id="holder" style="margin-top:15px;max-height:100px;" src="{{ $system->image }}">
                         </div>
                       </div>  
+                      <br /> 
                     </div>               
-                  </div>
-                </div>
-              </div>
-          {{-- ------------------ SEO 設定------------------ --}}             
-              <div class="row">
-                <div class="col-md-12 col-sm-12 col-xs-12">
-                  <div class="x_panel">
-                    <div class="x_title">
-                      <h2>
-                        {{ trans('news.newsIndexSeo_title') }} 
-                      </h2>
-                      <ul class="nav navbar-right panel_toolbox">
-                        <li><a class="collapse-link"><i class="fa fa-chevron-up"></i></a>
-                        </li>
-                      </ul>
-                      <div class="clearfix"></div>
-                    </div>
-                    <div class="x_content">
-                      <br />
-                  {{-- SEO Title 標題 --}}
-                      <div class="form-group">
-                        <label class="control-label col-md-3 col-sm-3 col-xs-12" for="first-name">
-                          {{ trans('news.newsIndexSeo_seo_title') }}
-                        </label>
-                        <div class="col-md-6 col-sm-6 col-xs-12">
-                          <input type="text" name="seo_title" value="{{ $news->seo_title or '' }}" class="form-control col-md-7 col-xs-12">
-                        </div>
-                      </div>
-                  {{-- SEO Description 敘述 --}}    
-                      <div class="form-group">
-                        <label class="control-label col-md-3 col-sm-3 col-xs-12" for="last-name">
-                          {{ trans('news.newsIndexSeo_seo_description') }}
-                        </label>
-                        <div class="col-md-6 col-sm-6 col-xs-12">
-                          <input type="text" name="seo_description" value="{{ $news->seo_description or ''  }}" class="form-control col-md-7 col-xs-12">
-                        </div>
-                      </div>
-                  {{-- SEO Keyword 關鍵字 --}}
-                      <div class="form-group">
-                        <label class="control-label col-md-3 col-sm-3 col-xs-12" for="last-name">
-                          {{ trans('news.newsIndexSeo_seo_keyword') }}
-                        </label>
-                        <div class="col-md-6 col-sm-6 col-xs-12">
-                          <input type="text" name="seo_keyword" value="{{ $news->seo_keyword or ''  }}" class="form-control col-md-7 col-xs-12">
-                        </div>
-                      </div>  
-                    </div>
                   </div>
                 </div>
               </div>
@@ -142,7 +97,7 @@
                   <div class="x_panel">
                     <div class="x_title">
                       <h2>
-                        {{ trans('news.newsIndexContent_title') }} 
+                        {{ trans('system.systemIndexContent_title') }} 
                       </h2>
                       <ul class="nav navbar-right panel_toolbox">
                         <li><a class="collapse-link"><i class="fa fa-chevron-up"></i></a></li>
@@ -152,7 +107,7 @@
                     <div class="x_content">
                       <br />
                     {{-- CKEditor with Responsive FileSystem --}}
-                      <textarea id="content" name="content" class="form-control">{{ $news->content or '' }}</textarea>
+                      <textarea id="content" name="content" class="form-control">{{ $system->content or '' }}</textarea>
                       <script src="//cdn.ckeditor.com/4.6.2/standard/ckeditor.js"></script>
                       <script>
                         var options = {
@@ -168,9 +123,57 @@
                     </div>
                   </div>
                 </div>
+              </div>                    
+          {{-- ------------------ SEO 設定------------------ --}}             
+              <div class="row">
+                <div class="col-md-12 col-sm-12 col-xs-12">
+                  <div class="x_panel">
+                    <div class="x_title">
+                      <h2>
+                        {{ trans('system.systemIndexSeo_title') }} 
+                      </h2>
+                      <ul class="nav navbar-right panel_toolbox">
+                        <li><a class="collapse-link"><i class="fa fa-chevron-up"></i></a>
+                        </li>
+                      </ul>
+                      <div class="clearfix"></div>
+                    </div>
+                    <div class="x_content">
+                      <br />
+                  {{-- SEO Title 標題 --}}
+                      <div class="form-group">
+                        <label class="control-label col-md-3 col-sm-3 col-xs-12" for="first-name">
+                          {{ trans('system.systemIndexSeo_seo_title') }}
+                        </label>
+                        <div class="col-md-6 col-sm-6 col-xs-12">
+                          <input type="text" name="seo_title" value="{{ $system->seo_title or '' }}" class="form-control col-md-7 col-xs-12">
+                        </div>
+                      </div>
+                  {{-- SEO Description 敘述 --}}    
+                      <div class="form-group">
+                        <label class="control-label col-md-3 col-sm-3 col-xs-12" for="last-name">
+                          {{ trans('system.systemIndexSeo_seo_description') }}
+                        </label>
+                        <div class="col-md-6 col-sm-6 col-xs-12">
+                          <input type="text" name="seo_description" value="{{ $system->seo_description or ''  }}" class="form-control col-md-7 col-xs-12">
+                        </div>
+                      </div>
+                  {{-- SEO Keyword 關鍵字 --}}
+                      <div class="form-group">
+                        <label class="control-label col-md-3 col-sm-3 col-xs-12" for="last-name">
+                          {{ trans('system.systemIndexSeo_seo_keyword') }}
+                        </label>
+                        <div class="col-md-6 col-sm-6 col-xs-12">
+                          <input type="text" name="seo_keyword" value="{{ $system->seo_keyword or ''  }}" class="form-control col-md-7 col-xs-12">
+                        </div>
+                      </div>  
+                    </div>
+                  </div>
+                </div>
               </div>
+
+
               {{-- ------------------ 送出按鈕 ------------------ --}}
-              <!-- @if(Auth::user()->can('news_index_edit')) -->
               <div class="row">
                 <div class="col-md-12 col-sm-12 col-xs-12">
                   <div class="x_panel">
@@ -187,12 +190,14 @@
                   </div>
                 </div>
               </div> 
-              <!-- @endif -->
             </form>                   
           </div>
         </div>
     <script>
-
+      /* -------- Filemanager Initialize ----------*/
+        $('#image').filemanager('image',{prefix:"{{ config('lfm.prefix') }}"});
+        $('#file').filemanager('file',{prefix:"{{ config('lfm.prefix') }}"});
+      /* -------- Sweet Alert ----------*/
       function confirm_submit()
       {
         swal({

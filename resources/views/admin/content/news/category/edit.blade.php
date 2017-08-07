@@ -212,8 +212,9 @@
     <script>
       $(document).ready(function(){
 
-          $('#image').filemanager('image');
-
+          /* -------- Filemanager Initialize ----------*/
+            $('#image').filemanager('image',{prefix:"{{ config('lfm.prefix') }}"});
+            $('#file').filemanager('file',{prefix:"{{ config('lfm.prefix') }}"});
           /* -------- SweetAlert 2 - Submit Confirm ----------*/
               $('#submit_btn').on('click',function(){
 

@@ -67,11 +67,12 @@
                       <br />
                   {{-- Name 標題 --}}
                       <div class="form-group">
-                        <label class="control-label col-md-3 col-sm-3 col-xs-12" for="first-name">{{ trans('member.memberCategoryIndex_category_title') }}
-                         <!-- <span class="required">*</span> -->
+                        <label class="control-label col-md-3 col-sm-3 col-xs-12" for="first-name">
+                          {{ trans('member.memberCategoryIndex_category_title') }}
+                          <span class="required">*</span>
                         </label>
                         <div class="col-md-6 col-sm-6 col-xs-12">
-                          <input type="text" name="name" value="" class="form-control col-md-7 col-xs-12">
+                          <input type="text" name="name" value="{{ old('name') }}" class="form-control col-md-7 col-xs-12">
                         </div>
                       </div>
                       <br /> 
@@ -123,7 +124,7 @@
                                 @foreach($group_value['value'] as $permission_key => $permission_value)
                                   <li>
                                     <label>
-                                      <input type="checkbox" name="permission[]" value="{{ $permission_value['name'] }}" required class="flat " /> {{ $permission_value['display_name'] }}
+                                      <input type="checkbox" name="permission[]" value="{{ $permission_value['name'] }}" required class="flat " @if(old('permission') && in_array($permission_value['name'],old('permission'))) checked @endif/> {{ $permission_value['display_name'] }}
                                     </label>
                                   </li>
                                 @endforeach

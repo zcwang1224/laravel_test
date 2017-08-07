@@ -5,7 +5,8 @@ namespace app\Exceptions;
 use Exception;
 use Illuminate\Auth\AuthenticationException;
 use Illuminate\Foundation\Exceptions\Handler as ExceptionHandler;
-
+use Illuminate\Support\Facades\Log;
+use app\Models\System;
 class Handler extends ExceptionHandler
 {
     /**
@@ -45,8 +46,9 @@ class Handler extends ExceptionHandler
      */
     public function render($request, Exception $exception)
     {
+        $system = System::first();
         if ($exception instanceof \Illuminate\Auth\Access\AuthorizationException) {
-            return response()->view('error.403',['exception' => $exception]);
+            return response()->view('error.403',['exception' => $exception, 'system' => $system]);
         }          
         return parent::render($request, $exception);
     }

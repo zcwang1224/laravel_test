@@ -321,7 +321,29 @@ return [
                                                                                     ], 
                                                                     ],                                                                      
                                                     ]
-                                    ],                                                                        
+                                    ],  
+                        /* 系統 */
+                        'system' => [
+                                        'display_name' => '系統',
+                                        'value' => [
+                                                    /* 系統 - 基本設定 */
+                                                    'system_index' => [
+                                                                        'display_name' => '基本設定',
+                                                                        'value' =>  [
+                                                                                    /* 系統 - 基本設定 - 查看 */
+                                                                                    'system_index_view'   => [
+                                                                                                                'name' => 'system_index_view', 
+                                                                                                                'display_name' => '查看'
+                                                                                                            ],
+                                                                                    /* 系統 - 基本設定 - 修改 */                        
+                                                                                    'system_index_edit'   =>  [
+                                                                                                                'name' => 'system_index_edit', 
+                                                                                                                'display_name' => '修改'
+                                                                                                            ],
+                                                                                    ], 
+                                                                    ]                                                                     
+                                                    ]
+                                    ],                                                                                                            
                     ]
 
 ];

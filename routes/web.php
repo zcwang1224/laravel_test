@@ -10,8 +10,6 @@
 | contains the "web" middleware group. Now create something great!
 |
 */
-
-
 // Auth::routes();
 // Authentication Routes...
 Route::get('login', 'Auth\LoginController@showLoginForm')->name('login');
@@ -33,7 +31,7 @@ Route::get('/home', 'HomeController@index')->name('home');
 /* ------------------------------------------------------------------------------
  |									需要會員認證
  * -----------------------------------------------------------------------------*/
-Route::group(['middleware' => 'auth', 'prefix' => 'admin'], function(){
+Route::group(['middleware' => 'auth', 'prefix' => 'admin', 'namespace' => 'Admin'], function(){
 
 	/* ----------------- 管理後台首頁 ----------------- */
 	Route::get('/index', 'IndexController@index')->name('admin_index');
@@ -41,14 +39,14 @@ Route::group(['middleware' => 'auth', 'prefix' => 'admin'], function(){
 	/* ----------------- 管理後台 - 會員管理 ----------------- */
 	Route::group(['prefix' => 'system'], function(){
 		/* 首頁 */
-		Route::get('/', 'SystemController@index');
+		Route::get('/', 'SystemController@index')->middleware('can:system_index_view');
 		Route::get('/index', 'SystemController@index')
-				// ->middleware('can:system_index_view')
+				->middleware('can:system_index_view')
 				->name('admin_system_index');
 
 		/* 首頁 - Update */
 		Route::post('/edit', 'SystemController@edit')
-				// ->middleware('can:system_index_edit')
+				->middleware('can:system_index_edit')
 				->name('admin_system_index_edit');				
 
 	});
@@ -143,7 +141,7 @@ Route::group(['middleware' => 'auth', 'prefix' => 'admin'], function(){
 	});
 	/* ----------------- 管理後台 - 最新消息 ----------------- */
 	Route::group(['prefix' => 'news'], function(){
-		/* 首頁 */
+		/* 首頁 */		
 		Route::get('/', 'NewsController@index')
 				->middleware(['can:news_index_view']);
 		Route::get('/index', 'NewsController@index')
@@ -223,7 +221,7 @@ Route::group(['middleware' => 'auth', 'prefix' => 'admin'], function(){
 			Route::post('/MultipleAction', 'NewsController@itemMultipleAction')
 					->middleware(['can:news_item_edit,news_item_delete'])
 					->name('admin_news_item_multiple_action');			
-		});		
+		});	
 	});
 	/* ----------------- 管理後台 - 商品 ----------------- */
 	Route::group(['prefix' => 'product'], function(){
@@ -318,7 +316,6 @@ Route::group(['middleware' => 'auth', 'prefix' => 'admin'], function(){
 		});							
 	});
 
-	/* ----------------- 管理後台 - 檔案管理 ----------------- */
 	
 });
 
@@ -326,8 +323,8 @@ Route::group(['middleware' => 'auth', 'prefix' => 'admin'], function(){
  |									Responsive FileSystem
  * -----------------------------------------------------------------------------*/
 Route::group(['before' => 'auth'], function () {
-    Route::get('/laravel-filemanager', '\Unisharp\Laravelfilemanager\controllers\LfmController@show')->name('filemanager');
-    Route::post('/laravel-filemanager/upload/{type}', '\Unisharp\Laravelfilemanager\controllers\LfmController@upload')->name('filemanager_upload');
+    Route::get(Config('lfm.prefix'), '\Unisharp\Laravelfilemanager\controllers\LfmController@show')->name('filemanager');
+    Route::post(Config('lfm.prefix').'/upload/{type}', '\Unisharp\Laravelfilemanager\controllers\LfmController@upload')->name('filemanager_upload');
     // list all lfm routes here...
 });
 
@@ -335,5 +332,7 @@ Route::group(['before' => 'auth'], function () {
  |                                  Web Front Side
  *______________________________________________________________________________*/
 
+Route::group(['namespace' => 'Front'], function(){
+	Route::get('/{act?}', ['uses' => 'FrontController@index']);
+});
 
-Route::get('/{act?}', ['uses' => 'FrontController@index']);

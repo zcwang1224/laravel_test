@@ -74,7 +74,7 @@ return [
     // V
 
     // W
-
+    'default_welcome' => '歡迎光臨',
     // X
 
     // Y

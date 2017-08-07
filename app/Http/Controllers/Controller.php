@@ -6,8 +6,9 @@ use Illuminate\Foundation\Bus\DispatchesJobs;
 use Illuminate\Routing\Controller as BaseController;
 use Illuminate\Foundation\Validation\ValidatesRequests;
 use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
-use app\Models\ProductCategory;
 use Illuminate\Support\Facades\Log;
+use app\Models\ProductCategory;
+use app\Models\System;
 
 class Controller extends BaseController
 {
@@ -19,6 +20,7 @@ class Controller extends BaseController
     public function __construct()
     {
     	// $this->data['productCategories'] = $this->getChildCategories();
+        
     }
 
     /**

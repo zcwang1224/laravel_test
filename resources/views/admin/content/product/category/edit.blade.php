@@ -69,30 +69,33 @@
                       <br />
                   {{-- Category 分類 --}}    
                       <div class="form-group">
-                        <label class="control-label col-md-3 col-sm-3 col-xs-12">{{ trans('product.productCategory_parant_category') }}</label>
+                        <label class="control-label col-md-3 col-sm-3 col-xs-12">
+                          {{ trans('product.productCategory_parant_category') }}
+                          <span class="required">*</span>
+                        </label>
                         <div class="col-md-6 col-sm-6 col-xs-12">
                           <select class="form-control" name="parent">
                             <option value="{{ $productCategory->product_category_id }}"></option>
-                          @foreach($categoriesDropMenu as $key => $value)
-                            <option value="{{ $value->product_category_id }}" @if($productCategory->parent == $value->product_category_id && $productCategory->parent != $productCategory->product_category_id) selected @endif>{{ $value->name }}</option>
-                          @endforeach               
+                            @foreach($categoriesDropMenu as $key => $value)
+                              <option value="{{ $value->product_category_id }}" @if($productCategory->parent == $value->product_category_id && $productCategory->parent != $productCategory->product_category_id) selected @endif>{{ $value->name }}</option>
+                            @endforeach               
                           </select>
                         </div>
                       </div>                     
                       <br />                       
                   {{-- Name 標題 --}}
                       <div class="form-group">
-                        <label class="control-label col-md-3 col-sm-3 col-xs-12" for="first-name">{{ trans('product.productCategory_category_title') }}
-                         <!-- <span class="required">*</span> -->
+                        <label class="control-label col-md-3 col-sm-3 col-xs-12" for="name">{{ trans('product.productCategory_category_title') }}
+                         <span class="required">*</span>
                         </label>
                         <div class="col-md-6 col-sm-6 col-xs-12">
-                          <input type="text" name="name" value="{{ $productCategory->name }}" class="form-control col-md-7 col-xs-12">
+                          <input type="text" id="name" name="name" value="{{ $productCategory->name }}" class="form-control col-md-7 col-xs-12">
                         </div>
                       </div> 
                       <br /> 
                   {{-- Image Upload 圖片上傳 --}} 
                       <div class="form-group">
-                        <label class="control-label col-md-3 col-sm-3 col-xs-12" for="first-name"> {{ trans('product.productItem_item_upload_image') }}
+                        <label class="control-label col-md-3 col-sm-3 col-xs-12"> {{ trans('product.productItem_item_upload_image') }}
                         </label>
                         <div class="col-md-6 col-sm-6 col-xs-12">
                            <div class="input-group">
@@ -109,7 +112,7 @@
                       <br /> 
                   {{-- Status 分類狀態 --}}                                          
                       <div class="form-group">
-                        <label class="control-label col-md-3 col-sm-3 col-xs-12" for="first-name">{{ trans('product.productCategory_category_status') }}
+                        <label class="control-label col-md-3 col-sm-3 col-xs-12">{{ trans('product.productCategory_category_status') }}
                          <!-- <span class="required">*</span> -->
                         </label>
                         <div class="col-md-6 col-sm-6 col-xs-12">
@@ -175,27 +178,26 @@
                     <div class="x_content">
                       <br />
                       <div class="form-group">
-                        <label class="control-label col-md-3 col-sm-3 col-xs-12" for="first-name">{{ trans('product.productCategory_category_seo_title') }}
-                         <!-- <span class="required">*</span> -->
+                        <label class="control-label col-md-3 col-sm-3 col-xs-12" for="seo_title">{{ trans('product.productCategory_category_seo_title') }}
                         </label>
                         <div class="col-md-6 col-sm-6 col-xs-12">
-                          <input type="text" name="seo_title" value="{{ $productCategory->seo_title }}" class="form-control col-md-7 col-xs-12">
+                          <input type="text" id="seo_title" name="seo_title" value="{{ $productCategory->seo_title }}" class="form-control col-md-7 col-xs-12">
                         </div>
                       </div>
                       <div class="form-group">
-                        <label class="control-label col-md-3 col-sm-3 col-xs-12" for="last-name">{{ trans('product.productCategory_category_seo_description') }}
-                        <!-- <span class="required">*</span> -->
+                        <label class="control-label col-md-3 col-sm-3 col-xs-12" for="seo_description">
+                          {{ trans('product.productCategory_category_seo_description') }}
                         </label>
                         <div class="col-md-6 col-sm-6 col-xs-12">
-                          <input type="text" name="seo_description" value="{{ $productCategory->seo_description }}" class="form-control col-md-7 col-xs-12">
+                          <input type="text" id="seo_description" name="seo_description" value="{{ $productCategory->seo_description }}" class="form-control col-md-7 col-xs-12">
                         </div>
                       </div>
                       <div class="form-group">
-                        <label class="control-label col-md-3 col-sm-3 col-xs-12" for="last-name">{{ trans('product.productCategory_category_seo_keyword') }}
-                        <!-- <span class="required">*</span> -->
+                        <label class="control-label col-md-3 col-sm-3 col-xs-12" for="seo_keyword">
+                          {{ trans('product.productCategory_category_seo_keyword') }}
                         </label>
                         <div class="col-md-6 col-sm-6 col-xs-12">
-                          <input type="text" name="seo_keyword" value="{{ $productCategory->seo_keyword }}" class="form-control col-md-7 col-xs-12">
+                          <input type="text" id="seo_keyword" name="seo_keyword" value="{{ $productCategory->seo_keyword }}" class="form-control col-md-7 col-xs-12">
                         </div>
                       </div>  
                     </div>
@@ -229,7 +231,10 @@
         </div>      
     <script>
       $(document).ready(function(){
-          $('#image').filemanager('image');
+
+          /* -------- Filemanager Initialize ----------*/
+            $('#image').filemanager('image',{prefix:"{{ config('lfm.prefix') }}"});
+            $('#file').filemanager('file',{prefix:"{{ config('lfm.prefix') }}"});
           /* -------- SweetAlert 2 - Submit Confirm ----------*/
               $('#submit_btn').on('click',function(){
 

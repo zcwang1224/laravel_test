@@ -36,7 +36,7 @@
             <div class="page-title">
               <div class="title_left">
                 <h3>{{ trans_choice('product.product_title',2,['type1' => trans('default.default_item'),
-                                                        'type2' => trans('default.default_create')]) }}</h3>
+                                                               'type2' => trans('default.default_create')]) }}</h3>
               </div>
             </div>
             <form method="POST" action="{{ route('admin_product_item_create') }}" id="main_form" data-parsley-validate class="form-horizontal form-label-left" enctype="multipart/form-data">
@@ -70,11 +70,16 @@
                   {{-- Category 分類 --}}
                       <br />
                       <div class="form-group">
-                        <label class="control-label col-md-3 col-sm-3 col-xs-12">{{ trans('product.productItem_item_category') }}</label>
+                        <label class="control-label col-md-3 col-sm-3 col-xs-12">
+                          {{ trans('product.productItem_item_category') }}
+                          <span class="required">*</span>
+                        </label>
                         <div class="col-md-6 col-sm-6 col-xs-12">
                           <select class="form-control" name="product_category">
                           @foreach($productCategories as $key => $productCategory)
-                            <option value="{{ $productCategory->product_category_id }}">{{ $productCategory->name }}</option>
+                            <option value="{{ $productCategory->product_category_id }}" @if(old('product_category') == $productCategory->product_category_id) selected @endif>
+                              {{ $productCategory->name }}
+                            </option>
                           @endforeach               
                           </select>
                         </div>
@@ -82,39 +87,39 @@
                       <br />
                   {{-- 商品 標題 --}}
                       <div class="form-group">
-                        <label class="control-label col-md-3 col-sm-3 col-xs-12">
+                        <label class="control-label col-md-3 col-sm-3 col-xs-12" for="name">
                           {{ trans('product.productItem_item_title') }}
-                         <!-- <span class="required">*</span> -->
+                         <span class="required">*</span>
                         </label>
                         <div class="col-md-6 col-sm-6 col-xs-12">
-                          <input type="text" name="name" value="" class="form-control col-md-7 col-xs-12">
+                          <input type="text" id="name" name="name" value="{{ old('name') }}" class="form-control col-md-7 col-xs-12">
                         </div>
                       </div> 
                       <br /> 
                   {{-- 商品 描述 1 --}}
                       <div class="form-group">
-                        <label class="control-label col-md-3 col-sm-3 col-xs-12" for="first-name">{{ trans('product.productItem_item_description1') }}
-                         <!-- <span class="required">*</span> -->
+                        <label class="control-label col-md-3 col-sm-3 col-xs-12" for="description1">
+                          {{ trans('product.productItem_item_description1') }}
                         </label>
                         <div class="col-md-6 col-sm-6 col-xs-12">
-                          <textarea name="description1" class="form-control col-md-7 col-xs-12"></textarea>
+                          <textarea id="description1" name="description1" class="form-control col-md-7 col-xs-12">{{ old('description1') }}</textarea>
                         </div>
                       </div> 
                       <br /> 
                   {{-- 商品 描述 2 --}}
                       <div class="form-group">
-                        <label class="control-label col-md-3 col-sm-3 col-xs-12" for="first-name">{{ trans('product.productItem_item_description2') }}
-                         <!-- <span class="required">*</span> -->
+                        <label class="control-label col-md-3 col-sm-3 col-xs-12" for="description2">
+                          {{ trans('product.productItem_item_description2') }}
                         </label>
                         <div class="col-md-6 col-sm-6 col-xs-12">
-                          <textarea name="description2" class="form-control col-md-7 col-xs-12"></textarea>
+                          <textarea id="description2" name="description2" class="form-control col-md-7 col-xs-12">{{ old('description2') }}</textarea>
                         </div>
                       </div> 
                       <br /> 
                   {{-- Image Upload 圖片上傳 --}} 
                       <div class="form-group">
-                        <label class="control-label col-md-3 col-sm-3 col-xs-12" for="first-name"> {{ trans('product.productItem_item_image') }}
-                         <!-- <span class="required">*</span> -->
+                        <label class="control-label col-md-3 col-sm-3 col-xs-12">
+                          {{ trans('product.productItem_item_image') }}
                         </label>
                         <div class="col-md-6 col-sm-6 col-xs-12">
                            <div class="input-group">
@@ -123,21 +128,21 @@
                                  <i class="fa fa-picture-o"></i> {{ trans('default.default_choose') }}
                                </a>
                              </span>
-                             <input id="thumbnail" class="form-control" type="text" name="image" readonly>
+                             <input id="thumbnail" class="form-control" value="{{ old('image') }}" type="text" name="image" readonly>
                            </div>
-                           <img id="holder" style="margin-top:15px;max-height:100px;">
+                           <img id="holder" src="{{ old('image') }}" style="margin-top:15px;max-height:100px;">
                         </div>
                       </div> 
                       <br />  
                   {{-- Status 分類狀態 --}}
                       <br />                                            
                       <div class="form-group">
-                        <label class="control-label col-md-3 col-sm-3 col-xs-12" for="first-name">{{ trans('product.productItem_item_status') }}
-                         <!-- <span class="required">*</span> -->
+                        <label class="control-label col-md-3 col-sm-3 col-xs-12">
+                          {{ trans('product.productItem_item_status') }}
                         </label>
                         <div class="col-md-6 col-sm-6 col-xs-12">
                           <label>
-                            <input type="checkbox" name="status" class="js-switch" value="1"/> {{ trans('default.default_checked') }}
+                            <input type="checkbox" name="status" class="js-switch" value="1" @if(old('status') == 1) checked @endif/> {{ trans('default.default_checked') }}
                           </label>
                         </div> 
                       </div>                                             
@@ -150,8 +155,8 @@
                 <div class="col-md-12 col-sm-12 col-xs-12">
                   <div class="x_panel">
                     <div class="x_title">
-                      <h2>{{ trans('product.productItem_item_content') }} 
-                      {{-- <small>different form elements</small> --}}
+                      <h2>
+                        {{ trans('product.productItem_item_content') }} 
                       </h2>
                       <ul class="nav navbar-right panel_toolbox">
                         <li><a class="collapse-link"><i class="fa fa-chevron-up"></i></a>
@@ -162,7 +167,7 @@
                     <div class="x_content">
                       <br />
                     {{-- CKEditor with Responsive FileSystem --}}
-                      <textarea id="content1" name="content1" class="form-control">{{ $productItem->content1 or '' }}</textarea>
+                      <textarea id="content1" name="content1" class="form-control">{{ old('content1') }}</textarea>
                       <script>
                         var options = {
                           filebrowserImageBrowseUrl: '{{ route("filemanager"        , ["type" => "Images"]) }}',
@@ -183,8 +188,8 @@
                 <div class="col-md-12 col-sm-12 col-xs-12">
                   <div class="x_panel">
                     <div class="x_title">
-                      <h2>{{ trans('product.productItem_item_content') }} 
-                      {{-- <small>different form elements</small> --}}
+                      <h2>
+                        {{ trans('product.productItem_item_content') }} 
                       </h2>
                       <ul class="nav navbar-right panel_toolbox">
                         <li><a class="collapse-link"><i class="fa fa-chevron-up"></i></a>
@@ -195,7 +200,7 @@
                     <div class="x_content">
                       <br />
                     {{-- CKEditor with Responsive FileSystem --}}
-                      <textarea id="content2" name="content2" class="form-control">{{ $productItem->content2 or '' }}</textarea>
+                      <textarea id="content2" name="content2" class="form-control">{{ old('content2') }}</textarea>
                       <script>
                         var options = {
                           filebrowserImageBrowseUrl: '{{ route("filemanager"        , ["type" => "Images"]) }}',
@@ -216,8 +221,8 @@
                 <div class="col-md-12 col-sm-12 col-xs-12">
                   <div class="x_panel">
                     <div class="x_title">
-                      <h2>{{ trans('product.productItem_item_content') }} 
-                      {{-- <small>different form elements</small> --}}
+                      <h2>
+                        {{ trans('product.productItem_item_content') }}
                       </h2>
                       <ul class="nav navbar-right panel_toolbox">
                         <li><a class="collapse-link"><i class="fa fa-chevron-up"></i></a>
@@ -228,7 +233,7 @@
                     <div class="x_content">
                       <br />
                     {{-- CKEditor with Responsive FileSystem --}}
-                      <textarea id="content3" name="content3" class="form-control">{{ $productItem->content3 or '' }}</textarea>
+                      <textarea id="content3" name="content3" class="form-control">{{ old('content3') }}</textarea>
                       <script>
                         var options = {
                           filebrowserImageBrowseUrl: '{{ route("filemanager"        , ["type" => "Images"]) }}',
@@ -249,8 +254,8 @@
                 <div class="col-md-12 col-sm-12 col-xs-12">
                   <div class="x_panel">
                     <div class="x_title">
-                      <h2>{{ trans('product.productItem_item_content') }} 
-                      {{-- <small>different form elements</small> --}}
+                      <h2>
+                        {{ trans('product.productItem_item_content') }}
                       </h2>
                       <ul class="nav navbar-right panel_toolbox">
                         <li><a class="collapse-link"><i class="fa fa-chevron-up"></i></a>
@@ -261,7 +266,7 @@
                     <div class="x_content">
                       <br />
                     {{-- CKEditor with Responsive FileSystem --}}
-                      <textarea id="content4" name="content4" class="form-control">{{ $productItem->content4 or '' }}</textarea>
+                      <textarea id="content4" name="content4" class="form-control">{{ old('content4') }}</textarea>
                       <script>
                         var options = {
                           filebrowserImageBrowseUrl: '{{ route("filemanager"        , ["type" => "Images"]) }}',
@@ -294,27 +299,27 @@
                     <div class="x_content">
                       <br />
                       <div class="form-group">
-                        <label class="control-label col-md-3 col-sm-3 col-xs-12" for="first-name">{{ trans('product.productItem_item_seo_title') }}
-                         <!-- <span class="required">*</span> -->
+                        <label class="control-label col-md-3 col-sm-3 col-xs-12" for="seo_title">
+                          {{ trans('product.productItem_item_seo_title') }}
                         </label>
                         <div class="col-md-6 col-sm-6 col-xs-12">
-                          <input type="text" name="seo_title" value="" class="form-control col-md-7 col-xs-12">
+                          <input type="text" id="seo_title" name="seo_title" value="{{ old('seo_title') }}" class="form-control col-md-7 col-xs-12">
                         </div>
                       </div>
                       <div class="form-group">
-                        <label class="control-label col-md-3 col-sm-3 col-xs-12" for="last-name">{{ trans('product.productItem_item_seo_description') }}
-                        <!-- <span class="required">*</span> -->
+                        <label class="control-label col-md-3 col-sm-3 col-xs-12" for="seo_description">
+                          {{ trans('product.productItem_item_seo_description') }}
                         </label>
                         <div class="col-md-6 col-sm-6 col-xs-12">
-                          <input type="text" name="seo_description" value="" class="form-control col-md-7 col-xs-12">
+                          <input type="text" id="seo_description" name="seo_description" value="{{ old('seo_description') }}" class="form-control col-md-7 col-xs-12">
                         </div>
                       </div>
                       <div class="form-group">
-                        <label class="control-label col-md-3 col-sm-3 col-xs-12" for="last-name">{{ trans('product.productItem_item_seo_keyword') }}
-                        <!-- <span class="required">*</span> -->
+                        <label class="control-label col-md-3 col-sm-3 col-xs-12" for="seo_keyword">
+                          {{ trans('product.productItem_item_seo_keyword') }}
                         </label>
                         <div class="col-md-6 col-sm-6 col-xs-12">
-                          <input type="text" name="seo_keyword" value="" class="form-control col-md-7 col-xs-12">
+                          <input type="text" id="seo_keyword" name="seo_keyword" value="{{ old('seo_keyword') }}" class="form-control col-md-7 col-xs-12">
                         </div>
                       </div>  
                     </div>
@@ -342,12 +347,37 @@
                       <br />
                       {{-- 規格設定 --}}
                       <div id="stand_container" >
+                      @if(session()->has('stands_name'))
+                        @foreach(session('stands_name') as $stand_k => $stand_v)
+                          <div class="control-group stand_item_container" data-stand_number="{{ $stand_k }}">
+                            <input type="hidden" name="stand_name_number[]" value="{{ $stand_k }}">
+                            <div class="col-md-3 col-sm-4 col-xs-4">
+                              <input type="text" name="stand_name[]" class="form-control" value="{{ $stand_v->stand_name }}" placeholder="{{ trans('default.default_please_input',['type' => trans('product.productItem_item_stand_name')]) }}" id="stand_name_input_{{$stand_k}}">
+                            </div>
+                            <div class="col-md-8  col-sm-4 col-xs-4">
+                              <input id="stand_{{$stand_k}}" name="stand_{{$stand_k}}" type="text" class="tags form-control" value="{{$stand_v->stand_item}}" />
+                              <div style="position: relative; float: left; width: 250px; margin: 10px;"></div>
+                            </div>
+                            <div class="col-md-1 col-sm-4 col-xs-4">
+                              <button type="button" class="btn btn-default btn-danger stand_remove_btn" aria-label="Left Align">
+                                <span class="glyphicon glyphicon-remove-sign" aria-hidden="true"></span>
+                              </button> 
+                            </div>                           
+                          </div>
+                        @endforeach 
+                      @endif
+
                       </div>   
                       <table class="table table-striped jambo_table bulk_action">
                         {{-- 表格標題 --}}
                         <thead>
                           <tr class="headings">
                             <th><input type="checkbox" id="check-all" class="flat" data-checkbox_name="product_stand_table"></th>
+                            @if(session()->has('stands_name'))
+                              @foreach(session('stands_name') as $stand_k => $stand_v)
+                              <th class="column-title" id="stand_name_head_{{$stand_k}}"></th>
+                              @endforeach   
+                            @endif                         
                             <th class="column-title" id="stand_heading_table_before_stand">{{ trans('product.productIten_item_stand_price')}} </th>
                             <th class="column-title last">{{ trans('product.productIten_item_stand_inventory')}} </th>
                             <th class="bulk-actions" colspan="10">
@@ -358,6 +388,21 @@
                         </thead> 
                         {{-- 表格內容 --}}
                         <tbody id="product_stand_item_container">  
+                        @if(session()->has('product_stands'))
+                          @foreach(session('product_stands') as $product_stand_key => $product_stand_value)   
+                            <tr class="even pointer" data-product_stand_id="{{ $product_stand_key }}">
+                              <input type="hidden" name="product_stand_id_{{$loop->index}}" value="{{ $product_stand_key }}">
+                              <td class="a-center ">
+                                <input type="checkbox" class="flat" name="stand_item_table" data-checkbox_name="stand_item_table" >
+                              </td>
+                              @foreach($product_stand_value->productStandItems as $productStandItem_key => $productStandItem_value)
+                                <td class="stand_item">{{ $productStandItem_value }}<input type="hidden" name="product_stand_{{$loop->index}}[]" value="{{ $productStandItem_value }}"></td>
+                              @endforeach
+                              <td><input class="form-control stand_price" type="text"  name="product_stand_price_{{$loop->index}}" value="{{ $product_stand_value->price }}"></td>
+                              <td><input class="form-control stand_inventory"  name="product_stand_inventory_{{$loop->index}}" type="text" value="{{ $product_stand_value->inventory }}"></td>
+                            </tr>
+                          @endforeach 
+                        @endif
                         </tbody>
                       </table> 
                     </div>
@@ -401,6 +446,30 @@
                         </thead> 
                         {{-- 表格內容 --}}
                         <tbody id="image_item_container"> 
+                        @if(session()->has('multiple_images'))
+                        @foreach(session('multiple_images') as $key => $value)
+                          <tr class="even pointer"  data-image_number="{{ $key }}">
+                            <td class="a-center ">
+                              <input type="checkbox" class="flat" name="image_table" data-checkbox_name="image_table" >
+                            </td>
+                            <td><input type="text" name="multiple_image_comment[]" value="{{ $value->image_comment }}" class="form-control col-md-7 col-xs-12"></td>
+                            <td>        
+                              <div class="col-md-10 col-sm-6 col-xs-12">
+                                 <div class="input-group">
+                                   <input id="thumbnail_{{$key}}" class="form-control" data-checkbox_name="image_table" type="text" name="multiple_image[]" value="{{ $value->image_path }}" readonly>
+                                   <span class="input-group-btn">
+                                     <a id="image_tr_{{$key}}" data-input="thumbnail_{{$key}}" data-preview="image_holder_{{$key}}" class="btn btn-primary">
+                                       <i class="fa fa-picture-o"></i> {{ trans('default.default_choose') }}
+                                     </a>
+                                   </span>             
+                                 </div>          
+                              </div>
+                            </td>   
+                            <td><img id="image_holder_{{$key}}" style="max-height:100px;" width="50px" height="50px" src="{{ $value->image_path }}"></td>
+                            </td>
+                          </tr>                          
+                        @endforeach
+                        @endif
                         </tbody>
                       </table>                          
                       </div>
@@ -449,7 +518,21 @@
                           </tr>
                         </thead> 
                         {{-- 表格內容 --}}
-                        <tbody id="relative_item_container">                      
+                        <tbody id="relative_item_container"> 
+                        @if(session()->has('related_items'))
+                          @foreach(session('related_items') as $key => $value)
+                            <tr class="even pointer" data-item_id="{{ $value->product_item_id }}">
+                              <td class="a-center ">
+                                <input type="checkbox" class="flat" name="table_records">
+                              </td>
+                              <td><img width="50px" height="50px" src="{{ $value->image }}"></td>
+                              <td>{{ $value->name }}</td>
+                              <td>{{ $value->productCategory->name }}</td>
+                              <td>{{ $value->created_at }}</td>
+                              </td>
+                            </tr>   
+                          @endforeach     
+                        @endif                                
                         </tbody>
                       </table>                      
                     </div>
@@ -553,10 +636,12 @@
           var init_items_length = $('#image_item_container > tr').length;
           for(var i = 0 ; i < init_items_length ;i++)
           {
-            $('#image_tr_'+i).filemanager('image');
+            $('#image_tr_'+i).filemanager('image',{prefix:"{{ config('lfm.prefix') }}"});
           }
           saveRelatedItems(); // related_item 存到 #related_item_container 內
-          $('#image').filemanager('image');
+          /* -------- Filemanager Initialize ----------*/
+            $('#image').filemanager('image',{prefix:"{{ config('lfm.prefix') }}"});
+            $('#file').filemanager('file',{prefix:"{{ config('lfm.prefix') }}"});
        
 
         /* --------- Jquery template - create new stand item -----------*/ 
@@ -606,7 +691,7 @@
                                       };
               $('#image_item_container').loadTemplate("#image_template",options,{append:true});
               initialIChecked(); 
-              $('#image_tr_'+last_image_number).filemanager('image');
+              $('#image_tr_'+last_image_number).filemanager('image',{prefix:"{{ config('lfm.prefix') }}"});
 
           });
 

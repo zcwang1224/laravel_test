@@ -15,7 +15,7 @@ return [
     'middlewares' => ['web','auth'],
 
     // The url to this package. Change it if necessary.
-    'prefix' => 'Filemanager', //laravel-filemanager
+    'prefix' => '/Filemanager', //laravel-filemanager
 
     /*
     |--------------------------------------------------------------------------
@@ -33,7 +33,7 @@ return [
     // Then you can rewrite userField function in App\Handler\ConfigHander class
     // And set 'user_field' to App\Handler\ConfigHander::class
     // Ex: The private folder of user will be named as the user id.
-    'user_field' => Unisharp\Laravelfilemanager\Handlers\ConfigHandler::class,
+    'user_field' => app\Handlers\LfmConfigHandler::class,
     // 'user_field' =>  'cool',
 
     /*
@@ -60,8 +60,8 @@ return [
 
     // The default display type for items.
     // Supported: "grid", "list"
-    'images_startup_view' => 'list',
-    'files_startup_view' => 'list',
+    'images_startup_view' => 'grid',
+    'files_startup_view' => 'grid',
 
     /*
     |--------------------------------------------------------------------------

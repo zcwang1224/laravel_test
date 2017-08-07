@@ -70,7 +70,7 @@ return [
     // V
 
     // W
-
+    'default_welcome' => 'Welcome',
     // X
 
     // Y

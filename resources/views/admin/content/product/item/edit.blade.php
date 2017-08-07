@@ -4,12 +4,9 @@
 {{-- --------------- 最上方top -------------- --}}
 @section('top')
     @parent
-    <!-- CSS -->
-    <link href="{{ asset('vendors/dropzone/dist/min/dropzone.min.css') }}" rel="stylesheet">  <!-- DropZone -->
     <link rel="stylesheet" href="{{ asset('colorbox-master/colorbox.css') }}" />  <!-- ColorBox -->
     <!-- JS -->
     <script src="{{ asset('ckeditor/ckeditor.js') }}"></script>   <!-- CKEditor -->
-    <script src="{{ asset('vendors/dropzone/dist/min/dropzone.min.js') }}"></script>  <!-- DropZone -->
     <script src="{{ asset('colorbox-master/jquery.colorbox.js') }}"></script>   <!-- ColorBox -->
     <script src="{{ asset('/vendor/laravel-filemanager/js/lfm.js') }}"></script>
 
@@ -599,10 +596,12 @@
           var init_items_length = $('#image_item_container > tr').length;
           for(var i = 0 ; i < init_items_length ;i++)
           {
-            $('#image_tr_'+i).filemanager('image');
+            $('#image_tr_'+i).filemanager('image',{prefix:"{{ config('lfm.prefix') }}"});
           }
           saveRelatedItems(); // related_item 存到 #related_item_container 內
-          $('#image').filemanager('image');
+          /* -------- Filemanager Initialize ----------*/
+            $('#image').filemanager('image',{prefix:"{{ config('lfm.prefix') }}"});
+            $('#file').filemanager('file',{prefix:"{{ config('lfm.prefix') }}"});
        
 
         /* --------- Jquery template - create new stand item -----------*/ 
@@ -652,7 +651,7 @@
                                       };
               $('#image_item_container').loadTemplate("#image_template",options,{append:true});
               initialIChecked(); 
-              $('#image_tr_'+last_image_number).filemanager('image');
+              $('#image_tr_'+last_image_number).filemanager('image',{prefix:"{{ config('lfm.prefix') }}"});
 
           });
 

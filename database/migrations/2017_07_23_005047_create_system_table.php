@@ -28,6 +28,7 @@ class CreateSystemTable extends Migration
             $table->string('seo_description', 255)->nullable();
 
             $table->timestamps();
+            $table->softDeletes();
         });
     }
 

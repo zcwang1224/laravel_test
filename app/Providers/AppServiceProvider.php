@@ -3,6 +3,9 @@
 namespace app\Providers;
 
 use Illuminate\Support\ServiceProvider;
+use Illuminate\Support\Facades\View;
+use app\Models\System;
+
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -13,7 +16,9 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot()
     {
-        //
+        // Sharing Data With All Views
+        $system = System::first();
+        view::share('system',$system);
     }
 
     /**

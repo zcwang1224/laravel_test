@@ -8,6 +8,7 @@
       localStorage.setItem('target_input', $(this).data('input'));
       localStorage.setItem('target_preview', $(this).data('preview'));
       window.open(route_prefix + '?type=' + type , 'FileManager', 'width=900,height=600');
+    
       return false;
     });
   }

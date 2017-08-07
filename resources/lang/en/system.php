@@ -14,4 +14,8 @@ return [
     */
     'system_sidebar_title' => 'System',
 
+    /* 首頁 */
+    'system_name_title' => 'Name',
+    'system_logo'       => 'Logo',
+    
 ];

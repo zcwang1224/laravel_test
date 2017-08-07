@@ -11,7 +11,7 @@
     <script src="{{ asset('ckeditor/ckeditor.js') }}"></script>  <!-- CKEditor -->
     <script src="{{ asset('vendors/dropzone/dist/min/dropzone.min.js') }}"></script>  <!-- DropZone -->
     <script src="{{ asset('colorbox-master/jquery.colorbox.js') }}"></script>   <!-- ColorBox -->
-
+    <script src="{{ asset('/vendor/laravel-filemanager/js/lfm.js') }}"></script> 
     @include('admin.partials.top')
 @stop
 
@@ -67,37 +67,40 @@
                       <br />     
                   {{-- Name 姓名 --}}                      
                       <div class="form-group">
-                        <label class="control-label col-md-3 col-sm-3 col-xs-12" for="first-name">{{ trans('member.memberItem_item_name') }}
-                         <!-- <span class="required">*</span> -->
+                        <label class="control-label col-md-3 col-sm-3 col-xs-12" for="name">
+                          {{ trans('member.memberItem_item_name') }}
+                          <span class="required">*</span>
                         </label>
                         <div class="col-md-6 col-sm-6 col-xs-12">
-                          <input type="text" name="name" value="" class="form-control col-md-7 col-xs-12">
+                          <input type="text" name="name" value="{{ old('name') }}" id="name" class="form-control col-md-7 col-xs-12">
                         </div>
                       </div>
                       <br />
                   {{-- Password 密碼 --}} 
                       <div class="form-group">
-                        <label class="control-label col-md-3 col-sm-3 col-xs-12" for="first-name">{{ trans('member.memberItem_item_password') }}
-                         <!-- <span class="required">*</span> -->
+                        <label class="control-label col-md-3 col-sm-3 col-xs-12" for="password">
+                          {{ trans('member.memberItem_item_password') }}
                         </label>
                         <div class="col-md-6 col-sm-6 col-xs-12">
-                          <input type="password" name="password" value="" class="form-control col-md-7 col-xs-12">
+                          <input type="password" name="password" value="" id="password" class="form-control col-md-7 col-xs-12">
                         </div>
                       </div>
                       <br />
                   {{-- Password Confirm 密碼確認 --}} 
                       <div class="form-group">
-                        <label class="control-label col-md-3 col-sm-3 col-xs-12" for="first-name">{{ trans('member.memberItem_item_password_confirm') }}
-                         <!-- <span class="required">*</span> -->
+                        <label class="control-label col-md-3 col-sm-3 col-xs-12" for="password_confirmation">
+                          {{ trans('member.memberItem_item_password_confirm') }}
+                          <span class="required">*</span>
                         </label>
                         <div class="col-md-6 col-sm-6 col-xs-12">
-                          <input type="password" name="password_confirmation" value="" class="form-control col-md-7 col-xs-12">
+                          <input type="password" name="password_confirmation" value="" id="password_confirmation" class="form-control col-md-7 col-xs-12">
                         </div>
                       </div>
                       <br />                                            
                   {{-- 分類設定 --}}
                       <div class="form-group">
-                          <label class="control-label col-md-3 col-sm-3 col-xs-12" for="first-name">分類
+                          <label class="control-label col-md-3 col-sm-3 col-xs-12" for="first-name">
+                            分類
                           </label>
                           <br>
                           <div style="padding: 5px;position: relative;margin-left: 25%;margin-right: 25%">  
@@ -105,7 +108,7 @@
                                 @foreach($roles as $role_key => $role)
                                   <li>
                                     <label>
-                                      <input type="checkbox" name="role[]" value="{{ $role->name }}" required class="flat " /> {{ $role->display_name }}
+                                      <input type="checkbox" name="role[]" value="{{ $role->name }}" required class="flat " @if(old('role') && in_array($role->name, old('role'))) checked @endif/> {{ $role->display_name }}
                                     </label>
                                   </li>
                                 @endforeach
@@ -114,43 +117,44 @@
                       </div>                        
                   {{-- email 信箱 --}}                      
                       <div class="form-group">
-                        <label class="control-label col-md-3 col-sm-3 col-xs-12" for="first-name">{{ trans('member.memberItem_item_email') }}
-                         <!-- <span class="required">*</span> -->
+                        <label class="control-label col-md-3 col-sm-3 col-xs-12" for="email">
+                          {{ trans('member.memberItem_item_email') }}
+                          <span class="required">*</span>
                         </label>
                         <div class="col-md-6 col-sm-6 col-xs-12">
-                          <input type="text" name="email" value="{{ old('email') }}" class="form-control col-md-7 col-xs-12">
+                          <input type="text" name="email" value="{{ old('email') }}" id="email" class="form-control col-md-7 col-xs-12">
                         </div>
                       </div>
                       <br /> 
                   {{-- mobile 手機 --}}                      
                       <div class="form-group">
-                        <label class="control-label col-md-3 col-sm-3 col-xs-12" for="first-name">{{ trans('member.memberItem_item_mobile') }}
-                         <!-- <span class="required">*</span> -->
+                        <label class="control-label col-md-3 col-sm-3 col-xs-12" for="mobile">
+                          {{ trans('member.memberItem_item_mobile') }}
+                          <span class="required">*</span>
                         </label>
                         <div class="col-md-6 col-sm-6 col-xs-12">
-                          <input type="text" name="mobile" value="{{ old('mobile') }}" class="form-control col-md-7 col-xs-12">
+                          <input type="text" name="mobile" value="{{ old('mobile') }}" id="mobile" class="form-control col-md-7 col-xs-12">
                         </div>
                       </div>
                       <br />                                            
-                  {{-- Image Upload 圖片上傳 --}}   
-                  {{--  
+                  {{-- Image Upload 圖片上傳 --}} 
                       <div class="form-group">
-                        <label class="control-label col-md-3 col-sm-3 col-xs-12" for="first-name"> {{ trans('news.newsItemCreate_basic_image') }}
-                         <!-- <span class="required">*</span> -->
+                        <label class="control-label col-md-3 col-sm-3 col-xs-12"> 
+                          {{ trans('member.memberItem_item_category') }}
                         </label>
                         <div class="col-md-6 col-sm-6 col-xs-12">
-                          <input type="file" name="image" id="fileUpload" class="form-control col-md-7 col-xs-12">
-                          <div id="image-holder">
-                          @if($newsItem->image != null && $newsItem != '')
-                            <img width="100px" height="100px" src="{{ asset('storage'.$newsItem->image) }}">
-                          @else
-                            <img width="100px" height="100px" src="{{ asset('storage'.$newsItem->image) }}">
-                          @endif
-                         </div>
+                           <div class="input-group">
+                             <span class="input-group-btn">
+                               <a id="image" data-input="thumbnail" data-preview="holder" class="btn btn-primary">
+                                 <i class="fa fa-picture-o"></i> {{ trans('default.default_choose') }}
+                               </a>
+                             </span>
+                             <input type="text" name="image" value="{{ old('image') }}" id="thumbnail" class="form-control" readonly>
+                           </div>
+                           <img src="{{ old('image') }}" id="holder" style="margin-top:15px;max-height:100px;">
                         </div>
-                      </div> 
-                      <br /> 
-                  --}}    
+                      </div>  
+                      <br />    
                   {{-- Status 分類狀態 --}}                                              
                       <div class="form-group">
                         <label class="control-label col-md-3 col-sm-3 col-xs-12" for="first-name">{{ trans('news.newsItemCreate_basic_status') }}
@@ -158,7 +162,7 @@
                         </label>
                         <div class="col-md-6 col-sm-6 col-xs-12">
                           <label>
-                            <input type="checkbox" name="status" class="js-switch" value="1" /> {{ trans('default.default_checked') }}
+                            <input type="checkbox" name="status" class="js-switch" value="1" @if(old('status') == 1) checked @endif/> {{ trans('default.default_checked') }}
                           </label>
                         </div> 
                       </div>  
@@ -191,6 +195,9 @@
         </div>      
     <script>
       $(document).ready(function(){
+          /* -------- Filemanager Initialize ----------*/
+            $('#image').filemanager('image',{prefix:"{{ config('lfm.prefix') }}"});
+            $('#file').filemanager('file',{prefix:"{{ config('lfm.prefix') }}"});        
           /* -------- SweetAlert 2 - Submit Confirm ----------*/
               $('#submit_btn').on('click',function(){
 
