@@ -1,7 +1,8 @@
 <?php
 
-namespace app\Http\Controllers;
+namespace app\Http\Controllers\Admin;
 
+use Validator;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Storage;
@@ -47,13 +48,7 @@ class ProductController extends Controller
     {
         try
         {
-
-        /* Validation Form Data */
-            $this->validate($request, [
-                'seo_title'       => 'required|max:100',
-                'seo_description' => 'required|max:100',
-                'seo_keyword'     => 'required|max:100',
-            ]);    
+ 
         /* Get Data */
             $input           = $request->all();
             $product_collection = Product::all();
@@ -72,7 +67,7 @@ class ProductController extends Controller
             $product->seo_keyword     = $input['seo_keyword'];
             $product->content         = $input['content'];
             $product->save();
-            return redirect()->action('ProductController@index');
+            return redirect()->action('Admin\ProductController@index');
         }
         catch(Exception $e)
         {
@@ -95,20 +90,22 @@ class ProductController extends Controller
             if($request->search != '')
             {
                 $productCategories = ProductCategory::where('name','like','%'.$request->search.'%')
-                                                        ->paginate($per_page);    
+                                                    ->paginate($per_page);    
             }
             else
             {
                 if($category_id === null)
                 {
-                    $productCategories = ProductCategory::with('ProductCategory','ProductCategories')->whereRaw('product_category_id = parent')
-                                                            ->paginate($per_page);
+                    $productCategories = ProductCategory::with('ProductCategory','ProductCategories')
+                                                        ->whereRaw('product_category_id = parent')
+                                                        ->paginate($per_page);
                 }
                 else
                 {
-                    $productCategories = ProductCategory::with('ProductCategory','ProductCategories')->where('parent', '=', $category_id)
-                                                            ->whereRaw('product_category_id != parent')
-                                                            ->paginate($per_page);
+                    $productCategories = ProductCategory::with('ProductCategory','ProductCategories')
+                                                        ->where('parent', '=', $category_id)
+                                                        ->whereRaw('product_category_id != parent')
+                                                        ->paginate($per_page);
                 }
                 
             }
@@ -133,19 +130,19 @@ class ProductController extends Controller
     {
         try
         {
-            $data['productCategories'] = ProductCategory::all();
+            $this->data['productCategories'] = ProductCategory::all();
             if($request->isMethod('post'))
             {
-                // Log::info($request);
-                // exit();
-                /* -------- Validation Form Data -------- */
-                $this->validate($request, [
-                    'name'            => 'required|max:100',
-                    'seo_title'       => 'required|max:100',
-                    'seo_description' => 'required|max:100',
-                    'seo_keyword'     => 'required|max:100',
-                ]); 
+                $validator = Validator::make( $request->all(), [
+                    'name' => 'required|max:255',
+                ]);
                 
+                if($validator->fails())
+                {
+                    return back()->withErrors($validator)
+                                 ->withInput($request->flash());
+                }
+
                 /* -------- Create A New Product Category Instance -------- */                
                 $updateData                       = $request->all();               
                 $productCategory                  = new ProductCategory;
@@ -168,11 +165,11 @@ class ProductController extends Controller
 
                 $productCategory->save();   
                 
-                return redirect()->action('ProductController@category');             
+                return redirect()->action('Admin\ProductController@category');             
             }
 
 
-            return view('admin.content.product.category.create',$data);
+            return view('admin.content.product.category.create',$this->data);
         }
         catch(Exception $e)
         {
@@ -203,12 +200,15 @@ class ProductController extends Controller
             if($request->isMethod('post'))
             {
                 /* -------- Validation Form Data -------- */
-                $this->validate($request, [
-                    'name'            => 'required|max:100',
-                    'seo_title'       => 'required|max:100',
-                    'seo_description' => 'required|max:100',
-                    'seo_keyword'     => 'required|max:100',
-                ]);  
+                $validator = Validator::make( $request->all(), [
+                    'name' => 'required|max:255',
+                ]);
+                
+                if($validator->fails())
+                {
+                    return back()->withErrors($validator)
+                                 ->withInput($request->flash());
+                }
                 /* -------- Basic Data --------  */
                 $updateData              = $request->all(); 
                 $productCategory->parent = $updateData['parent' ];
@@ -229,7 +229,7 @@ class ProductController extends Controller
 
                 $productCategory->save();   
                 
-                return redirect()->action('ProductController@category');             
+                return redirect()->action('Admin\ProductController@category');             
             }
             $this->data['productCategory'] = $productCategory;
             return view('admin.content.product.category.edit',$this->data);
@@ -255,7 +255,7 @@ class ProductController extends Controller
         {
             $productCategory = ProductCategory::findOrFail($id);
             $productCategory->delete();
-            return redirect()->action('ProductController@category');
+            return redirect()->action('Admin\ProductController@category');
         }
         catch(Exception $e)
         {
@@ -294,7 +294,7 @@ class ProductController extends Controller
                                 
                                 $productCategory->delete();
                             }
-                            return redirect()->action('ProductController@category');
+                            return redirect()->action('Admin\ProductController@category');
                             break;
                         case 'hide':
                             foreach ($categoryArray as $key => $category_id) 
@@ -303,7 +303,7 @@ class ProductController extends Controller
                                 $productCategory->status = 0;
                                 $productCategory->save();
                             }
-                            return redirect()->action('ProductController@category');
+                            return redirect()->action('Admin\ProductController@category');
                             break; 
                         case 'show':
                             foreach ($categoryArray as $key => $category_id) 
@@ -312,7 +312,7 @@ class ProductController extends Controller
                                 $productCategory->status = 1;
                                 $productCategory->save();
                             }
-                            return redirect()->action('ProductController@category');
+                            return redirect()->action('Admin\ProductController@category');
                             break;                                    
                         default:
                             # code...
@@ -320,7 +320,7 @@ class ProductController extends Controller
                     }                
                 }
             }
-            return redirect()->action('ProductController@category');
+            return redirect()->action('Admin\ProductController@category');
         }
         catch(Exception $e)
         {
@@ -377,18 +377,75 @@ class ProductController extends Controller
     {
         try
         {
-            $data['productCategories'] = ProductCategory::all();
+            $this->data['productCategories'] = ProductCategory::all();
             if($request->isMethod('post'))
             {
-                // Log::info($request);
-                // exit();
+                $updateData = $request->all();
                 /* -------- Validation Form Data -------- */
-                $this->validate($request, [
-                    'name'            => 'required|max:100',
-                    'seo_title'       => 'required|max:100',
-                    'seo_description' => 'required|max:100',
-                    'seo_keyword'     => 'required|max:100',
-                ]); 
+                $validator = Validator::make($request->all(), [
+                    'name' => 'required|max:100',
+                ]);
+                if($validator->fails())
+                {
+                    // dd($updateData);
+                    // 規格名稱 - stand name
+                    $stands_name = array();
+                    foreach($updateData['stand_name_number'] as $stand_name_number_key => $stand_name_number_value)
+                    {
+                        $stand = new \stdClass;
+                        $stand->stand_name = $updateData['stand_name'][$stand_name_number_key];
+                        $stand->stand_item = $updateData['stand_'.$stand_name_number_value];
+                        array_push($stands_name, $stand);
+                    }
+                    // 商品規格
+                    $product_stands      = array();
+                    if(isset($updateData['product_stand_0']) && isset($updateData['stand_name']))
+                    {
+                        $count_product_stand = count($updateData['product_stand_0']);
+                        $count_stand_name    = count($updateData['stand_name']);
+                        Log::info('total prodcut stand 0 : '.$count_product_stand);
+
+                        for($i = 0 ; $i < $count_product_stand ; $i++)
+                        {
+                                $productStand            = new \stdClass;
+                                $productStand->price     = $updateData['product_stand_price_'.$i];
+                                $productStand->inventory = $updateData['product_stand_inventory_'.$i];
+                                $productStand->productStandItems = array();
+                                for($j = 0 ; $j < $count_stand_name ; $j ++)
+                                {
+                                    $productStand->productStandItems[$j] = $updateData['product_stand_'.$j][$i];
+                                }
+                                array_push($product_stands, $productStand);
+
+                        }   
+                        
+                    }
+
+
+                    // 圖片上傳
+                    $multiple_images = array();
+                    if(isset($updateData['multiple_image']))
+                    {
+                        foreach($updateData['multiple_image'] as $key => $value)
+                        {
+                            $multiple_image = new \stdClass;
+                            $multiple_image->image_comment = $updateData['multiple_image_comment'][$key];
+                            $multiple_image->image_path = $value;
+                            $multiple_images[$key] = $multiple_image;
+                        }                        
+                    }
+                    // 相關產品
+                    $related_items = ProductItem::find(explode(',',$updateData['related_items']));
+// dd($product_stands);
+                    return back()->withErrors($validator)
+                                 ->withInput($request->flash())
+                                 ->with([
+                                            'stands_name'       => $stands_name,
+                                            'product_stands'    => $product_stands,
+                                            'related_items'     => $related_items, 
+                                            'multiple_images'   => $multiple_images,
+                                        ]);
+                }
                 
                 /* -------- Create A New Product Category Instance -------- */                
                 $updateData                       = $request->all();               
@@ -510,7 +567,6 @@ class ProductController extends Controller
                             $productStand->product_item_id = $productItem->product_item_id;
                             $productStand->price           = $updateData['product_stand_price_'.$i];
                             $productStand->inventory       = $updateData['product_stand_inventory_'.$i];
-                            // $productStand->product_stand_number = $updateData['product_stand_price_'.$i];
                             $productStand->save();
                             for($j = 0 ; $j < $count_stand_name ; $j++)
                             {
@@ -547,11 +603,11 @@ class ProductController extends Controller
                 }                
   
                 
-                return redirect()->action('ProductController@item');             
+                return redirect()->action('Admin\ProductController@item');             
             }
 
 
-            return view('admin.content.product.item.create',$data);
+            return view('admin.content.product.item.create',$this->data);
         }
         catch(Exception $e)
         {
@@ -574,18 +630,17 @@ class ProductController extends Controller
             // 上層分類下拉選單
             $productCategories = ProductCategory::all();
             $productItem->load(['stands','stands.standItems','productStands','productStands.productStandItems']);
-      // Log::info($productItem);
             if($request->isMethod('post'))
             {
-                Log::info($request);
-                // exit();
                 /* -------- Validation Form Data -------- */
-                $this->validate($request, [
-                    'name'            => 'required|max:100',
-                    'seo_title'       => 'required|max:100',
-                    'seo_description' => 'required|max:100',
-                    'seo_keyword'     => 'required|max:100',
-                ]);  
+                $validator = Validator::make($request->all(), [
+                    'name' => 'required|max:100',
+                ]);
+                if($validator->fails())
+                {
+                    return back()->withErrors($validator)
+                                 ->withInput($request->flash());
+                } 
                 /* -------- Basic Data --------  */
                 $updateData                       = $request->all(); 
                 $productItem->product_category_id = $updateData['product_category_id'];
@@ -737,30 +792,9 @@ class ProductController extends Controller
                         
                     }
                 }
-
-
-
-                // Log::info($productItem->stands);
-                // Log::info($inputStandName->intersect($productItem->stands));
-
-                /* -------- Image Upload --------  */
-                // if($request->file('image'))
-                // {   
-                //     //刪除舊有檔案
-                //     if(Storage::exists($productItem->image))
-                //     {
-                //         Storage::delete($productItem->image);
-                //     }
-                //     //存入檔案與資料庫
-                //     $dateTime  = date('YmdHis');
-                //     $file_name = $dateTime.'_'.$request->file('image')->getClientOriginalName();
-                //     $request->file('image')->storeAs('upload/product/category/', $file_name);
-                //     $productItem->image = '/upload/product/category/'.$file_name;
-                // }
-
                 $productItem->save();   
                
-                return redirect()->action('ProductController@item');             
+                return redirect()->action('Admin\ProductController@item');             
             }
             
             $this->data['productCategories'] = $productCategories;
@@ -849,7 +883,7 @@ class ProductController extends Controller
                                 $productItem = ProductItem::findOrFail($item_id);
                                 $productItem->delete();
                             }
-                            return redirect()->action('ProductController@item');
+                            return redirect()->action('Admin\ProductController@item');
                             break;
                         case 'hide':
                             foreach ($itemArray as $key => $item_id) 
@@ -858,7 +892,7 @@ class ProductController extends Controller
                                 $productItem->status = 0;
                                 $productItem->save();
                             }
-                            return redirect()->action('ProductController@item');
+                            return redirect()->action('Admin\ProductController@item');
                             break; 
                         case 'show':
                             foreach ($itemArray as $key => $item_id) 
@@ -867,7 +901,7 @@ class ProductController extends Controller
                                 $productItem->status = 1;
                                 $productItem->save();
                             }
-                            return redirect()->action('ProductController@item');
+                            return redirect()->action('Admin\ProductController@item');
                             break;                                    
                         default:
                             # code...
@@ -875,7 +909,7 @@ class ProductController extends Controller
                     }                
                 }
             }
-            return redirect()->action('ProductController@item');
+            return redirect()->action('Admin\ProductController@item');
         }
         catch(Exception $e)
         {

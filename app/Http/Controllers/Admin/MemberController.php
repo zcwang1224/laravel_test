@@ -1,7 +1,8 @@
 <?php
 
-namespace app\Http\Controllers;
+namespace app\Http\Controllers\Admin;
 
+use Validator;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Foundation\Auth\User as Authenticatable;
@@ -71,7 +72,7 @@ class MemberController extends Controller
             $member->seo_keyword     = $input['seo_keyword'];
             $member->content         = $input['content'];
             $member->save();
-            return redirect()->action('MemberController@index');
+            return redirect()->action('Admin\MemberController@index');
         }
         catch(Exception $e)
         {
@@ -128,10 +129,18 @@ class MemberController extends Controller
             {
                 $updateData = $request->all();
                 /* -------- Validation Form Data -------- */
-                $this->validate($request, [
+                $validator = Validator::make($request->all(), [
                     'name'            => 'required|max:100',
                     'permission'      => 'required',
-                ]);  
+                ]);
+
+                if($validator->fails())
+                {
+                    return back()->withErrors($validator)
+                                 ->withInput($request->flash())
+                                 ->with(['permission' => $updateData['permission']]);
+                }
+
                 /* -------- 基本資料 -------- */
                 $role = new Role;
                 $role->name = $updateData['name'];
@@ -157,7 +166,7 @@ class MemberController extends Controller
                 }
 
                 
-                return redirect()->action('MemberController@category');             
+                return redirect()->action('Admin\MemberController@category');             
             }
             
             $this->data['permissions'] = $permissions; 
@@ -189,6 +198,7 @@ class MemberController extends Controller
                 /* -------- Validation Form Data -------- */
                 $this->validate($request, [
                     'name'            => 'required|max:100',
+                    'permission'      => 'required',
                 ]);  
                 /* -------- 基本資料 -------- */
                 $role->name = $updateData['name'];
@@ -218,7 +228,7 @@ class MemberController extends Controller
 
 
                 
-                return redirect()->action('MemberController@category');             
+                return redirect()->action('Admin\MemberController@category');             
             }
             
             $role_has_permission_arr = array();
@@ -264,10 +274,10 @@ class MemberController extends Controller
                         
                         $role->delete();
                     }
-                    return redirect()->action('MemberController@category');            
+                    return redirect()->action('Admin\MemberController@category');            
                 }
             }
-            return redirect()->action('MemberController@category');
+            return redirect()->action('Admin\MemberController@category');
         }
         catch(Exception $e)
         {
@@ -321,14 +331,21 @@ class MemberController extends Controller
             if($request->isMethod('post'))
             {
                 /* -------- Validation Form Data -------- */
-                $this->validate($request, [
+                $updateData   = $request->all(); 
+                $validator = Validator::make($updateData, [
                     'name'     => 'required|max:100',
                     'password' => 'required|min:6|confirmed',
                     'email'    => 'required|email|unique:users,email',
-                ]); 
+                ]);
+
+                if($validator->fails())
+                {
+                    return back()->withErrors($validator)
+                                 ->withInput($request->except('password'));
+                }
 
                 /* -------- Edit Form Data -------- */             
-                $updateData   = $request->all(); 
+                
                 $user           = new User;
                 $user->name     = $updateData['name'];
                 $user->email    = $updateData['email'];
@@ -350,7 +367,7 @@ class MemberController extends Controller
                 /* -------- 修改分類 --------- */
                 $user->syncRoles($updateData['role']);
                
-                return redirect()->action('MemberController@item');             
+                return redirect()->action('Admin\MemberController@item');             
             }
             $this->data['roles'] = $roles;
             return view('admin.content.member.item.create',$this->data);  
@@ -379,8 +396,9 @@ class MemberController extends Controller
             {
                 /* -------- Validation Form Data -------- */
                 $this->validate($request, [
-                    'name'  => 'required|max:100',
-                    'email' => 'email',
+                    'name'     => 'required|max:100',
+                    'password' => 'required|min:6|confirmed',
+                    'email'    => 'email',
                 ]); 
 
                 /* -------- Edit Form Data -------- */             
@@ -406,7 +424,7 @@ class MemberController extends Controller
                 {
                     $user->syncRoles($updateData['role']);
                 }
-                return redirect()->action('MemberController@item');             
+                return redirect()->action('Admin\MemberController@item');             
             }
 
             $this->data['user']  = $user;
@@ -450,7 +468,7 @@ class MemberController extends Controller
                                 $user = User::findOrFail($item_id);
                                 $user->delete();
                             }
-                            return redirect()->action('MemberController@item');
+                            return redirect()->action('Admin\MemberController@item');
                             break;
                         case 'hide':
                             foreach ($itemArray as $key => $item_id) 
@@ -459,7 +477,7 @@ class MemberController extends Controller
                                 $user->status = 0;
                                 $user->save();
                             }
-                            return redirect()->action('MemberController@item');
+                            return redirect()->action('Admin\MemberController@item');
                             break; 
                         case 'show':
                             foreach ($itemArray as $key => $item_id) 
@@ -468,7 +486,7 @@ class MemberController extends Controller
                                 $user->status = 1;
                                 $user->save();
                             }
-                            return redirect()->action('MemberController@item');
+                            return redirect()->action('Admin\MemberController@item');
                             break;                                    
                         default:
                             # code...
@@ -476,7 +494,7 @@ class MemberController extends Controller
                     }                
                 }
             }
-            return redirect()->action('NewsController@item');
+            return redirect()->action('Admin\MemberController@item');
         }
         catch(Exception $e)
         {

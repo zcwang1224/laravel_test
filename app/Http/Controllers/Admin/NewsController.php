@@ -1,7 +1,8 @@
 <?php
 
-namespace app\Http\Controllers;
+namespace app\Http\Controllers\Admin;
 
+use Validator;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Storage;
@@ -30,7 +31,7 @@ class NewsController extends Controller
             Log::error('------------------------------------------錯誤: ' . get_class($this) . '@newsIndex---------------------------------------------');
             Log::error($e->getMessage());             
             Log::error($e->getTraceAsString());
-            return view('error.500');
+            return view('error.500', $this->data);
     	}
     }
 
@@ -43,14 +44,6 @@ class NewsController extends Controller
     {
         try
         {
-
-        /* Validation Form Data */
-            $this->validate($request, [
-                'seo_title'       => 'required|max:100',
-                'seo_description' => 'required|max:100',
-                'seo_keyword'     => 'required|max:100',
-            ]);            
-
         /* Get Data */
             $input           = $request->all();
             $news_collection = News::all();
@@ -69,14 +62,14 @@ class NewsController extends Controller
             $news->seo_keyword     = $input['seo_keyword'];
             $news->content         = $input['content'];
             $news->save();
-            return redirect()->action('NewsController@index');
+            return redirect()->action('Admin\NewsController@index');
         }
         catch(Exception $e)
         {
             Log::error('------------------------------------------錯誤: ' . get_class($this) . '@newsEdit---------------------------------------------');
             Log::error($e->getMessage());             
             Log::error($e->getTraceAsString());
-            return view('error.500');
+            return view('error.500', $this->data);
         }
     }
 
@@ -106,7 +99,7 @@ class NewsController extends Controller
             Log::error('------------------------------------------錯誤: ' . get_class($this) . '@category---------------------------------------------');
             Log::error($e->getMessage());             
             Log::error($e->getTraceAsString());
-            return view('error.500');
+            return view('error.500', $this->data);
         }
     }    
     /**
@@ -121,12 +114,14 @@ class NewsController extends Controller
             if($request->isMethod('post'))
             {
                 /* -------- Validation Form Data -------- */
-                $this->validate($request, [
+                $validator = Validator::make($request->all(),[
                     'name'            => 'required|max:100',
-                    'seo_title'       => 'required|max:100',
-                    'seo_description' => 'required|max:100',
-                    'seo_keyword'     => 'required|max:100',
-                ]); 
+                ]);
+                if ($validator->fails())
+                {
+                    return back()->withErrors($validator)
+                                 ->withInput($request->flash());
+                }
 
                 /* -------- Create A New News Category Instance -------- */                
                 $updateData                    = $request->all();
@@ -149,7 +144,7 @@ class NewsController extends Controller
 
                 $newsCategory->save();   
                 
-                return redirect()->action('NewsController@category');             
+                return redirect()->action('Admin\NewsController@category');             
             }
 
 
@@ -160,7 +155,7 @@ class NewsController extends Controller
             Log::error('------------------------------------------錯誤: ' . get_class($this) . '@categoryCreate---------------------------------------------');
             Log::error($e->getMessage());             
             Log::error($e->getTraceAsString());
-            return view('error.500');
+            return view('error.500', $this->data);
         }
     }
     /**
@@ -176,12 +171,14 @@ class NewsController extends Controller
             if($request->isMethod('post'))
             {
                 /* -------- Validation Form Data -------- */
-                $this->validate($request, [
+                $validator = Validator::make($request->all(),[
                     'name'            => 'required|max:100',
-                    'seo_title'       => 'required|max:100',
-                    'seo_description' => 'required|max:100',
-                    'seo_keyword'     => 'required|max:100',
-                ]);  
+                ]);
+                if ($validator->fails())
+                {
+                    return back()->withErrors($validator)
+                                 ->withInput($request->flash());
+                }
                 /* -------- Basic Data --------  */
                 $updateData                    = $request->all(); 
                 $newsCategory->name            = $updateData['name'     ];
@@ -201,7 +198,7 @@ class NewsController extends Controller
 
                 $newsCategory->save();   
                 
-                return redirect()->action('NewsController@category');             
+                return redirect()->action('Admin\NewsController@category');             
             }
             $this->data['newsCategory'] = $newsCategory;
             return view('admin.content.news.category.edit',$this->data);
@@ -211,7 +208,7 @@ class NewsController extends Controller
             Log::error('------------------------------------------錯誤: ' . get_class($this) . '@categoryEdit---------------------------------------------');
             Log::error($e->getMessage());             
             Log::error($e->getTraceAsString());
-            return view('error.500');
+            return view('error.500', $this->data);
         }
     } 
 
@@ -227,14 +224,14 @@ class NewsController extends Controller
         {
             $newsCategory = NewsCategory::findOrFail($id);
             $newsCategory->delete();
-            return redirect()->action('NewsController@category');
+            return redirect()->action('Admin\NewsController@category');
         }
         catch(Exception $e)
         {
             Log::error('------------------------------------------錯誤: ' . get_class($this) . '@categoryDelete---------------------------------------------');
             Log::error($e->getMessage());             
             Log::error($e->getTraceAsString());
-            return view('error.500');
+            return view('error.500', $this->data);
         }
     }  
 
@@ -266,7 +263,7 @@ class NewsController extends Controller
                                 
                                 $newsCategory->delete();
                             }
-                            return redirect()->action('NewsController@category');
+                            return redirect()->action('Admin\NewsController@category');
                             break;
                         case 'hide':
                             foreach ($categoryArray as $key => $category_id) 
@@ -275,7 +272,7 @@ class NewsController extends Controller
                                 $newsCategory->status = 0;
                                 $newsCategory->save();
                             }
-                            return redirect()->action('NewsController@category');
+                            return redirect()->action('Admin\NewsController@category');
                             break; 
                         case 'show':
                             foreach ($categoryArray as $key => $category_id) 
@@ -284,7 +281,7 @@ class NewsController extends Controller
                                 $newsCategory->status = 1;
                                 $newsCategory->save();
                             }
-                            return redirect()->action('NewsController@category');
+                            return redirect()->action('Admin\NewsController@category');
                             break;                                    
                         default:
                             # code...
@@ -292,14 +289,14 @@ class NewsController extends Controller
                     }                
                 }
             }
-            return redirect()->action('NewsController@category');
+            return redirect()->action('Admin\NewsController@category');
         }
         catch(Exception $e)
         {
             Log::error('------------------------------------------錯誤: ' . get_class($this) . '@categoryMultipleAction---------------------------------------------');
             Log::error($e->getMessage());             
             Log::error($e->getTraceAsString());
-            return view('error.500');
+            return view('error.500', $this->data);
         }
     } 
     /**
@@ -328,7 +325,7 @@ class NewsController extends Controller
             Log::error('------------------------------------------錯誤: ' . get_class($this) . '@categoryDelete---------------------------------------------');
             Log::error($e->getMessage());             
             Log::error($e->getTraceAsString());
-            return view('error.500');
+            return view('error.500', $this->data);
         }
     }    
     /**
@@ -362,7 +359,7 @@ class NewsController extends Controller
             Log::error('------------------------------------------錯誤: ' . get_class($this) . '@Item---------------------------------------------');
             Log::error($e->getMessage());             
             Log::error($e->getTraceAsString());
-            return view('error.500');
+            return view('error.500', $this->data);
         }
     } 
 
@@ -375,19 +372,22 @@ class NewsController extends Controller
     {
         try
         {
-
-            $newsCategories = NewsCategory::all();
+            $newsCategories               = NewsCategory::all();
             $this->data['newsCategories'] = $newsCategories;
+
             if($request->isMethod('post'))
             {
+                
                 /* -------- Validation Form Data -------- */
-                $this->validate($request, [
+                $validator = Validator::make($request->all(),[
+                    'news_category'   => 'required',
                     'name'            => 'required|max:100',
-                    'seo_title'       => 'required|max:100',
-                    'seo_description' => 'required|max:100',
-                    'seo_keyword'     => 'required|max:100',
-                ]); 
-
+                ]);
+                if ($validator->fails())
+                {
+                    return back()->withErrors($validator)
+                                 ->withInput($request->flash());
+                }
                 /* -------- Create A New News Item Instance -------- */                 
                 $updateData                 = $request->all();
                 $newsItem                   = new NewsItem;
@@ -409,17 +409,17 @@ class NewsController extends Controller
                 }
                 $newsItem->save();   
                 
-                return redirect()->action('NewsController@item');             
+                return redirect()->action('Admin\NewsController@item');             
             }
 
             return view('admin.content.news.item.create', $this->data);
         }
         catch(Exception $e)
         {
-            Log::error('------------------------------------------錯誤: ' . get_class($this) . '@categoryCreate---------------------------------------------');
+            Log::error('------------------------------------------錯誤: ' . get_class($this) . '@itemCreate---------------------------------------------');
             Log::error($e->getMessage());             
             Log::error($e->getTraceAsString());
-            return view('error.500');
+            return view('error.500', $this->data);
         }
     }
 
@@ -438,13 +438,15 @@ class NewsController extends Controller
             if($request->isMethod('post'))
             {
                 /* -------- Validation Form Data -------- */
-                $this->validate($request, [
+                $validator = Validator::make($request->all(),[
+                    'news_category'   => 'required',
                     'name'            => 'required|max:100',
-                    'seo_title'       => 'required|max:100',
-                    'seo_description' => 'required|max:100',
-                    'seo_keyword'     => 'required|max:100',
-                ]); 
-
+                ]);
+                if ($validator->fails())
+                {
+                    return back()->withErrors($validator)
+                                 ->withInput($request->flash());
+                }
                 /* -------- Edit Form Data -------- */             
                 $updateData                 = $request->all(); 
                 $newsItem->name             = $updateData['name'            ];
@@ -464,7 +466,7 @@ class NewsController extends Controller
                 $newsItem->content         = $updateData['content'          ];
 
                 $newsItem->save();                
-                return redirect()->action('NewsController@item');             
+                return redirect()->action('Admin\NewsController@item');             
             }
             else
             {
@@ -480,7 +482,7 @@ class NewsController extends Controller
             Log::error('------------------------------------------錯誤: ' . get_class($this) . '@itemEdit---------------------------------------------');
             Log::error($e->getMessage());             
             Log::error($e->getTraceAsString());
-            return view('error.500');
+            return view('error.500', $this->data);
         }
     }     
     /**
@@ -510,7 +512,7 @@ class NewsController extends Controller
                                 $newsItem = NewsItem::findOrFail($item_id);
                                 $newsItem->delete();
                             }
-                            return redirect()->action('NewsController@item');
+                            return redirect()->action('Admin\NewsController@item');
                             break;
                         case 'hide':
                             foreach ($itemArray as $key => $item_id) 
@@ -519,7 +521,7 @@ class NewsController extends Controller
                                 $newsItem->status = 0;
                                 $newsItem->save();
                             }
-                            return redirect()->action('NewsController@item');
+                            return redirect()->action('Admin\NewsController@item');
                             break; 
                         case 'show':
                             foreach ($itemArray as $key => $item_id) 
@@ -528,7 +530,7 @@ class NewsController extends Controller
                                 $newsItem->status = 1;
                                 $newsItem->save();
                             }
-                            return redirect()->action('NewsController@item');
+                            return redirect()->action('Admin\NewsController@item');
                             break;                                    
                         default:
                             # code...
@@ -536,14 +538,14 @@ class NewsController extends Controller
                     }                
                 }
             }
-            return redirect()->action('NewsController@item');
+            return redirect()->action('Admin\NewsController@item');
         }
         catch(Exception $e)
         {
             Log::error('------------------------------------------錯誤: ' . get_class($this) . '@itemMultipleAction---------------------------------------------');
             Log::error($e->getMessage());             
             Log::error($e->getTraceAsString());
-            return view('error.500');
+            return view('error.500', $this->data);
         }
     } 
 }
